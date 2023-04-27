@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { UsersService } from "../services/users.services";
 import { BaseGetQueryParams, HTTP_STATUSES } from "../config/baseTypes";
 import { UserPostT } from "../models/users.models";
+import {checkMongooseErrorsOnDuplicateKey} from "../helpers";
 
 @injectable()
 export class UsersControllers {
@@ -24,11 +25,12 @@ export class UsersControllers {
         res: Response
     ) {
         try {
-            const userId = await this.usersService.create(req.body);
+            const userId = await this.usersService.createConfirmedUser(req.body);
             const user = await this.usersService.usersQueryRepo.findById(userId);
             res.status(HTTP_STATUSES.CREATED_201).send(user);
         } catch (e) {
-            return res.status(HTTP_STATUSES.BAD_REQUEST_400).send((e as Error).message);
+            const error = (e as Error);
+            return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkMongooseErrorsOnDuplicateKey(error));
         }
     }
     async deleteOne(

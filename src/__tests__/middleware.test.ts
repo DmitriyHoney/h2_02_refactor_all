@@ -31,4 +31,6 @@ describe('middlewares', () => {
                 .expect(HTTP_STATUSES.OK_200);
         });
     });
+
+    // TODO: write test for check count request middleware
 });

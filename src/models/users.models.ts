@@ -13,9 +13,8 @@ export const userSchema = new Schema({
     },
     password: String,
     confirmedInfo: {
-        isConfirmedEmail: { type: Boolean, default: false },
+        isConfirmedEmail: { type: Boolean, default: true },
         code: { type: String, default: '' },
-        codeExpired: { type: String, default: '' },
     }
 }, { timestamps: true });
 
@@ -39,14 +38,14 @@ userSchema.pre('save', async function(next) {
     }
 });
 
-export type UserViewT = {
-
-}
-
 export type UserPostT = {
     login: string,
     password: string,
     email: string,
+    confirmedInfo: {
+        isConfirmedEmail: boolean,
+        code: string,
+    }
 }
 
 export const User = mongoose.model('User', userSchema);

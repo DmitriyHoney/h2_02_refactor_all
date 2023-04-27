@@ -8,4 +8,9 @@ export const settings = {
     BASIC_USERS: {
         admin: 'qwerty',
     },
+    EXP_CONFIRM_CODE: process.env.EXP_CONFIRM_CODE || '1m',
+
+    SMTP_SERVICE: process.env.SMTP_SERVICE,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PWD: process.env.SMTP_PWD,
 };

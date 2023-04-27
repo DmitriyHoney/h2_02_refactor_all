@@ -8,8 +8,17 @@ export class UsersService {
         @inject(UsersQueryRepo) public usersQueryRepo: UsersQueryRepo,
         @inject(UsersCommandRepo) protected usersCommandRepo: UsersCommandRepo
     ) {}
-    async create(body: UserPostT): Promise<string> {
+    async createConfirmedUser(body: UserPostT): Promise<string> {
         return await this.usersCommandRepo.create(body);
+    }
+    async createNotConfirmedUser(body: UserPostT, code: string): Promise<string> {
+        return await this.usersCommandRepo.create({
+            ...body,
+            confirmedInfo: {
+                isConfirmedEmail: false,
+                code,
+            }
+        });
     }
     async update(body: any) {}
     async deleteOne(id: string) {

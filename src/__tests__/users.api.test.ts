@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { HTTP_STATUSES } from '../config/baseTypes';
+import {HTTP_STATUSES, VALIDATION_ERROR_MSG, ValidationErrors} from '../config/baseTypes';
 import { configForTests } from './baseConfig';
 import app from "../app";
 
@@ -146,20 +146,38 @@ describe('/users (Authorization - Basic)', () => {
             expect(users.body.items.length).toBe(1);
         });
         test('should return 400 - if login user already exist', async () => {
-            await configForTests.reqWithAuthHeader('post', configForTests.urls.users, configForTests.basicToken)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.users, configForTests.basicToken)
                 .send({
                     ...userPayload2,
                     login: userPayload.login,
                 })
                 .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+            expect(result.body).toEqual({
+                errorsMessages: [
+                    {
+                        message: expect.any(String),
+                        field: 'login'
+                    }
+                ]
+            } as ValidationErrors);
         });
         test('should return 400 - if email user already exist', async () => {
-            await configForTests.reqWithAuthHeader('post', configForTests.urls.users, configForTests.basicToken)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.users, configForTests.basicToken)
                 .send({
                     ...userPayload2,
                     email: userPayload.email,
                 })
                 .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+            expect(result.body).toEqual({
+                errorsMessages: [
+                    {
+                        message: expect.any(String),
+                        field: 'email'
+                    }
+                ]
+            } as ValidationErrors);
         });
     });
 

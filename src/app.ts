@@ -7,6 +7,7 @@ import cookies from 'cookie-parser';
 
 // Routes
 import usersRoute from './routes/users.routes';
+import authRoute from './routes/auth.routes';
 import testRoute from './routes/test.routes';
 
 
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('trust proxy', true);
 
 app.use('/api/users', usersRoute);
+app.use('/api/auth', authRoute);
 app.use('/api/testing/all-data', testRoute);
 app.get('*', (req, res) => res.send('Not found'));
 
