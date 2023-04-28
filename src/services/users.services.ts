@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify";
 import {UsersCommandRepo, UsersQueryRepo} from "../repositry/users.repositry";
-import {UserPostT} from "../models/users.models";
+import {UserPostT, UserUpdateT} from "../models/users.models";
 
 @injectable()
 export class UsersService {
@@ -20,7 +20,9 @@ export class UsersService {
             }
         });
     }
-    async update(body: any) {}
+    async update(userId: string, body: UserUpdateT) {
+        return await this.usersCommandRepo.update(userId, body);
+    }
     async deleteOne(id: string) {
         return await this.usersCommandRepo.deleteOne(id);
     }

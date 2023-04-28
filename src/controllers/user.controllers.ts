@@ -17,7 +17,7 @@ export class UsersControllers {
             { pageSize, pageNumber, sortBy, sortDirection },
             { searchEmailTerm, searchLoginTerm }
         );
-        res.send(result).status(HTTP_STATUSES.OK_200);
+        res.status(HTTP_STATUSES.OK_200).send(result);
     }
 
     async create(

@@ -10,7 +10,9 @@ export const configForTests = {
         users: '/api/users/',
         deleteAll: '/api/testing/all-data/',
         auth: {
-            registration: '/api/auth/registration'
+            registration: '/api/auth/registration',
+            registrationEmailResending: '/api/auth/registration-email-resending',
+            registrationConfirmation: '/api/auth/registration-confirmation',
         },
     },
     smptApi: new MailSlurp({ apiKey: '76936eb68c09c69e56ad1a477d351723f80821c2b57c99447976e3c65ad28318' }),

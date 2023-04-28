@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { HTTP_STATUSES } from "../config/baseTypes";
 import {AuthService} from "../services/auth.services";
 import {UserPostT} from "../models/users.models";
-import {checkMongooseErrorsOnDuplicateKey} from "../helpers";
+import { checkMongooseErrorsOnDuplicateKey } from "../helpers";
 
 @injectable()
 export class AuthControllers {
@@ -13,11 +13,35 @@ export class AuthControllers {
         res: Response
     ) {
         try {
-            const result = await this.authService.registration(req.body);
+            await this.authService.registration(req.body);
             res.status(HTTP_STATUSES.NO_CONTENT_204).send({});
         } catch (e) {
             const error = (e as Error);
             return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkMongooseErrorsOnDuplicateKey(error));
+        }
+    }
+    async registrationResendEmail(
+        req: Request<{}, {}, { email: string }, {}>,
+        res: Response
+    ) {
+        try {
+            const result = await this.authService.registrationResendEmail(req.body.email);
+            if (result.errorCode) return res.status(result.errorCode).send(result.errorMessage);
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send();
+        } catch (e) {
+            return res.status(HTTP_STATUSES.SERVER_ERROR_500).send(e);
+        }
+    }
+    async registrationConfirmation(
+        req: Request<{}, {}, { code: string }, {}>,
+        res: Response
+    ) {
+        try {
+            const result = await this.authService.registrationConfirmation(req.body.code);
+            if (result.errorCode) return res.status(result.errorCode).send(result.errorMessage);
+            res.status(HTTP_STATUSES.NO_CONTENT_204).send();
+        } catch (e) {
+            return res.status(HTTP_STATUSES.SERVER_ERROR_500).send(e);
         }
     }
 }

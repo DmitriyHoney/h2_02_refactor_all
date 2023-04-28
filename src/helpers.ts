@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import {BaseQueryT, ValidationErrors} from "./config/baseTypes";
+import {BaseQueryT, ErrorsForControllers, HTTP_STATUSES, ValidationErrors} from "./config/baseTypes";
 
 export const setDefaultQueryParams = ({ pageSize = '10', pageNumber = '1', sortBy = 'createdAt', sortDirection = 'desc'}: BaseQueryT) => ({
     pageSize: Math.abs(+pageSize),
@@ -18,8 +18,7 @@ export const isLogin = (login: string | undefined | null) => {
 };
 
 export const checkMongooseErrorsOnDuplicateKey = (error: Error): ValidationErrors | string => {
-    const errorsArr = error.message.match(/{ \w+: "\w*\@*\w*\.*\w*" }/g);
-    console.log(errorsArr);
+    const errorsArr = error.message.match(/\{\s*\w+:\s*"\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+"\s*}|\{\s*\w+:\s*"\w*\.*\w*"\s*}/g);
     if (errorsArr && errorsArr.length > 0) {
         const [field, value] = errorsArr[0].replace(/\s+|"|{|}|'/g, '').split(':')
         return {
@@ -51,3 +50,16 @@ export const hashPassword = (password: string): Promise<string> => {
         });
     });
 };
+
+export const errorGenerator = {
+    badRequest(msg: string, field: string) {
+        return {
+            errorCode: HTTP_STATUSES.BAD_REQUEST_400,
+            errorMessage: {
+                errorsMessages: [
+                    { message: 'User this email not found', field: 'email' }
+                ]
+            }
+        } as ErrorsForControllers
+    }
+}

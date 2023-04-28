@@ -126,5 +126,9 @@ export const baseRepositry = {
 
     async findById<I>(model: mongoose.Model<I>, id: string, excludeFields: object = {}) {
         return await model.findOne({ _id: id }, { ...excludeFields  });
+    },
+
+    async findByFields<I>(model: mongoose.Model<I>, fields: object, excludeFields: object = {}) {
+        return await model.findOne(fields, { ...excludeFields  });
     }
 }

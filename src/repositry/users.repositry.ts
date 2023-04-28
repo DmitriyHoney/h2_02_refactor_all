@@ -1,5 +1,5 @@
 import {injectable} from "inversify";
-import {User, UserPostT} from "../models/users.models";
+import {User, UserPostT, UserUpdateT} from "../models/users.models";
 import {BaseQueryT} from "../config/baseTypes";
 import {baseRepositry} from "./base.repositry";
 import {ObjectId} from "mongodb";
@@ -20,6 +20,13 @@ export class UsersQueryRepo {
         return baseRepositry.find(this.User, params, prepareFilters, { password: 0 });
     }
 
+    findByEmail(email: string) {
+        return baseRepositry.findByFields(this.User, { email: email }, {});
+    }
+    findByConfirmCode(code: string) {
+        return baseRepositry.findByFields(this.User, { 'confirmedInfo.code': code }, {});
+    }
+
     async findById(userId: string) {
         return await baseRepositry.findById(this.User, userId, {
             confirmedInfo: 0,
@@ -38,6 +45,10 @@ export class UsersCommandRepo {
     async create(user: UserPostT): Promise<string> {
         const createdRow = await this.User.create(user);
         return String(createdRow._id);
+    }
+    async update(id: string, userPayload: UserUpdateT): Promise<string | null> {
+        const createdRow = await this.User.findByIdAndUpdate(id, userPayload);
+        return createdRow ? String(createdRow._id) : null;
     }
     async deleteAll() {
         const result = await this.User.deleteMany();

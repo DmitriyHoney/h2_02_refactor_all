@@ -42,9 +42,18 @@ export type UserPostT = {
     login: string,
     password: string,
     email: string,
-    confirmedInfo: {
+    confirmedInfo?: {
         isConfirmedEmail: boolean,
         code: string,
+    }
+}
+
+export type UserUpdateT = {
+    login?: string,
+    email?: string,
+    confirmedInfo?: {
+        isConfirmedEmail?: boolean,
+        code?: string,
     }
 }
 

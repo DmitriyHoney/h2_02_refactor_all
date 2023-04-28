@@ -1,13 +1,13 @@
-export const HTTP_STATUSES = {
-    OK_200: 200,
-    CREATED_201: 201,
-    NO_CONTENT_204: 204,
-    BAD_REQUEST_400: 400,
-    NOT_AUTHORIZED_401: 401,
-    FORBIDDEN_403: 403,
-    NOT_FOUND_404: 404,
-    TOO_MANY_REQUESTS_429: 429,
-    SERVER_ERROR_500: 500,
+export enum HTTP_STATUSES {
+    OK_200 = 200,
+    CREATED_201 = 201,
+    NO_CONTENT_204 = 204,
+    BAD_REQUEST_400 = 400,
+    NOT_AUTHORIZED_401 = 401,
+    FORBIDDEN_403 = 403,
+    NOT_FOUND_404 = 404,
+    TOO_MANY_REQUESTS_429 = 429,
+    SERVER_ERROR_500 = 500,
 };
 
 export const VALIDATION_ERROR_MSG = {
@@ -43,4 +43,9 @@ export type ValidationError = { message: string, field: String }
 
 export type ValidationErrors = {
     errorsMessages: Array<ValidationError>
+}
+
+export type ErrorsForControllers = {
+    errorCode: HTTP_STATUSES,
+    errorMessage: ValidationErrors | string
 }
