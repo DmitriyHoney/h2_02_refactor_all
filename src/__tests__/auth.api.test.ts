@@ -228,4 +228,22 @@ describe('/auth', () => {
                 .expect(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         });
     });
+
+    describe('/login', () => {
+        test('should return 400 - incorrect body', async () => {
+
+        });
+        test('should return 400 - password or login is wrong', async () => {
+
+        });
+        test('should return 200 - res.body has accessToken & cookies has refreshToken', async () => {
+
+        });
+        test('should return 200 - res.body has accessToken & cookies has refreshToken', async () => {
+
+        });
+        test('should return 429 - More than 5 attempts from one IP-address during 10 seconds', async () => {
+
+        });
+    });
 });
