@@ -4,11 +4,15 @@ import {AuthControllers} from "../controllers/auth.controllers";
 import {AuthService} from "../services/auth.services";
 import {AuthCommandRepo, AuthQueryRepo} from "../repositry/auth.repositry";
 import {UsersCommandRepo, UsersQueryRepo} from "../repositry/users.repositry";
-import usersContainer from "./users.composition";
+import {SecurityDeviceService} from "../services/securityDevice.services";
+import {SecurityDeviceQueryRepo, SecurityDeviceCommandRepo} from "../repositry/securityDevice.repositry";
 
 const authContainer = new Container();
 authContainer.bind(AuthControllers).to(AuthControllers);
 authContainer.bind(AuthService).to(AuthService);
+authContainer.bind(SecurityDeviceService).to(SecurityDeviceService);
+authContainer.bind(SecurityDeviceQueryRepo).to(SecurityDeviceQueryRepo);
+authContainer.bind(SecurityDeviceCommandRepo).to(SecurityDeviceCommandRepo);
 authContainer.bind(AuthQueryRepo).to(AuthQueryRepo);
 authContainer.bind(AuthCommandRepo).to(AuthCommandRepo);
 authContainer.bind(UsersService).to(UsersService);

@@ -7,6 +7,7 @@ import {UsersService} from "./users.services";
 import {emailManager} from "../managers/email.manager";
 import {ErrorsForControllers, HTTP_STATUSES} from "../config/baseTypes";
 import {comparePasswords, errorGenerator, isEmail} from "../helpers";
+import {SecurityDeviceService} from "./securityDevice.services";
 
 @injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
         @inject(AuthQueryRepo) public authQueryRepo: AuthQueryRepo,
         @inject(AuthCommandRepo) protected authCommandRepo: AuthCommandRepo,
         @inject(UsersService) protected usersService: UsersService,
+        @inject(SecurityDeviceService) protected securityDeviceService: SecurityDeviceService,
     ) {}
     async registration(body: UserPostT) {
         const code = jwtService.createJWT({}, settings.EXP_CONFIRM_CODE);
@@ -55,7 +57,7 @@ export class AuthService {
         });
         return { errorCode: null };
     }
-    async login(body: { loginOrEmail: string, password: string }) {
+    async login(body: { loginOrEmail: string, password: string }, ipAddress: string, userAgent: string) {
         const findUserMethod = isEmail(body.loginOrEmail)
             ? this.usersService.usersQueryRepo.findByEmail.bind(this.usersService.usersQueryRepo)
             : this.usersService.usersQueryRepo.findByLogin.bind(this.usersService.usersQueryRepo);
@@ -80,6 +82,7 @@ export class AuthService {
             email: user.email
         }, settings.REFRESH_TOKEN_ALIVE);
 
+        this.securityDeviceService.addUserActiveDeviceSession(user, ipAddress, userAgent);
         return { errorCode: null, accessToken, refreshToken };
     }
 }

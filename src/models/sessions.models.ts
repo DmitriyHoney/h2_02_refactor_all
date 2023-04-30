@@ -3,7 +3,12 @@ const { Schema } = mongoose;
 
 export const sessionsSchema = new Schema({
     ip: String,
-    userAgent: String,
+    title: String,
+    lastActiveDate: {
+        type: Date,
+        required: false,
+    },
+    deviceId: String,
     userId: String,
 }, { timestamps: true });
 
@@ -16,10 +21,15 @@ sessionsSchema.method('toJSON', function() {
     return object;
 });
 
+sessionsSchema.pre('save', function(next) {
+    this.lastActiveDate = new Date();
+    next();
+});
+
 export type SessionPostT = {
     ip: string,
     userAgent: string,
     userId: string,
 }
 
-export const Session = mongoose.model('User', sessionsSchema);
+export const Session = mongoose.model('Session', sessionsSchema);

@@ -9,6 +9,7 @@ const userService = container.resolve(UsersService);
 router.delete('/', (req, res) => {
     Promise.all([
         userService.deleteAll(),
+        // TODO: add logic delete all devices
     ]).then((result) => {
         res.status(HTTP_STATUSES.NO_CONTENT_204).send();
     }).catch((err) => {

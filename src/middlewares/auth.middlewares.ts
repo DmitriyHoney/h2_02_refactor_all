@@ -4,7 +4,13 @@ import { settings } from '../config/settings';
 import rateLimit from 'express-rate-limit';
 
 import { body } from 'express-validator';
-import { isEmail } from '../helpers';
+import {getUserIp, isEmail} from '../helpers';
+import {jwtService} from "../managers/jwt.manager";
+import container from '../composition/users.composition';
+import {UsersService} from "../services/users.services";
+
+const userService = container.resolve(UsersService);
+
 
 export const registrationResendingEmailBody = [
     body('email')
@@ -50,6 +56,19 @@ export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunct
     } else {
       return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     }
+};
+
+export const authJwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
+
+    const verifiedToken = jwtService.verifyToken(refreshToken);
+    if (!verifiedToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
+
+    if (!req.context) req.context = { user: null };
+    // @ts-ignore
+    req.context.user = await userService.usersQueryRepo.findById(verifiedToken.id);
+    next();
 };
 
 export const rateLimiterUsingThirdParty = (ms = 10000, max = 5) => {

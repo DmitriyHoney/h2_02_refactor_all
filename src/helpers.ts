@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { Request } from 'express';
 import {BaseQueryT, ErrorsForControllers, HTTP_STATUSES, ValidationErrors} from "./config/baseTypes";
 
 export const setDefaultQueryParams = ({ pageSize = '10', pageNumber = '1', sortBy = 'createdAt', sortDirection = 'desc'}: BaseQueryT) => ({
@@ -49,6 +50,12 @@ export const hashPassword = (password: string): Promise<string> => {
             resolve(hash);
         });
     });
+};
+
+export const getUserIp = (req: Request) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    if (!ip) return 'none';
+    return Array.isArray(ip) ? ip[0] : ip;
 };
 
 export const errorGenerator = {

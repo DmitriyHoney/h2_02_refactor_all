@@ -3,11 +3,13 @@ import { Request, Response } from 'express';
 import { HTTP_STATUSES } from "../config/baseTypes";
 import {AuthService} from "../services/auth.services";
 import {UserPostT} from "../models/users.models";
-import { checkMongooseErrorsOnDuplicateKey } from "../helpers";
+import {checkMongooseErrorsOnDuplicateKey, getUserIp} from "../helpers";
 
 @injectable()
 export class AuthControllers {
-    constructor(@inject(AuthService) protected authService: AuthService) {}
+    constructor(
+        @inject(AuthService) protected authService: AuthService
+    ) {}
     async registration(
         req: Request<{}, {}, UserPostT, {}>,
         res: Response
@@ -49,7 +51,7 @@ export class AuthControllers {
         res: Response
     ) {
         try {
-            const result = await this.authService.login(req.body);
+            const result = await this.authService.login(req.body, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
             if (result.errorCode) return res.status(result.errorCode).send(result.errorMessage);
             res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true });
             res.status(HTTP_STATUSES.OK_200).send({ accessToken: result.accessToken });
