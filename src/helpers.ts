@@ -61,5 +61,15 @@ export const errorGenerator = {
                 ]
             }
         } as ErrorsForControllers
+    },
+    notAuthorized(msg: string, field: string) {
+        return {
+            errorCode: HTTP_STATUSES.NOT_AUTHORIZED_401,
+            errorMessage: {
+                errorsMessages: [
+                    { message: msg, field: field }
+                ]
+            }
+        } as ErrorsForControllers
     }
 }

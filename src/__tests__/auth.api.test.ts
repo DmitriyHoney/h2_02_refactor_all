@@ -231,19 +231,57 @@ describe('/auth', () => {
 
     describe('/login', () => {
         test('should return 400 - incorrect body', async () => {
-
+            await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({})
+                .expect(HTTP_STATUSES.BAD_REQUEST_400);
         });
         test('should return 400 - password or login is wrong', async () => {
-
+            await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({
+                    loginOrEmail: userPayload.login,
+                    password: 'wrongPassword'
+                })
+                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
         });
         test('should return 200 - res.body has accessToken & cookies has refreshToken', async () => {
+            const result = await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({
+                    loginOrEmail: userPayload.login,
+                    password: userPayload.password
+                })
+                .expect(HTTP_STATUSES.OK_200);
 
-        });
-        test('should return 200 - res.body has accessToken & cookies has refreshToken', async () => {
+            expect(result.body).toEqual({
+                accessToken: expect.any(String)
+            });
 
+            const cookies = result.headers['set-cookie'];
+
+            const findRefreshCookie = cookies.find((i: string) => i.indexOf('refreshToken') >= 0);
+            expect(findRefreshCookie).toBeTruthy();
+
+            const isHttpOnly = findRefreshCookie.indexOf('HttpOnly') >= 0;
+            expect(isHttpOnly).toBeTruthy();
+
+            const isSecure = findRefreshCookie.indexOf('Secure') >= 0;
+            expect(isSecure).toBeTruthy();
         });
         test('should return 429 - More than 5 attempts from one IP-address during 10 seconds', async () => {
+            const promises = [];
+            for (let i = 1; i <= 5; i++) {
+                promises.push(request(app)
+                    .post(configForTests.urls.auth.login)
+                    .send({}))
+            }
+            await Promise.all(promises);
 
+            request(app)
+                .post(configForTests.urls.auth.login)
+                .send({})
+                .expect(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         });
     });
 });

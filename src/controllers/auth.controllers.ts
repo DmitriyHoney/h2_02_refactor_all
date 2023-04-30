@@ -44,4 +44,18 @@ export class AuthControllers {
             return res.status(HTTP_STATUSES.SERVER_ERROR_500).send(e);
         }
     }
+    async login(
+        req: Request<{}, {}, { loginOrEmail: string, password: string }, {}>,
+        res: Response
+    ) {
+        try {
+            const result = await this.authService.login(req.body);
+            if (result.errorCode) return res.status(result.errorCode).send(result.errorMessage);
+            res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true });
+            res.status(HTTP_STATUSES.OK_200).send({ accessToken: result.accessToken });
+        } catch (e) {
+            console.log(e);
+            return res.status(HTTP_STATUSES.SERVER_ERROR_500).send(e);
+        }
+    }
 }

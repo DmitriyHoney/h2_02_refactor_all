@@ -4,6 +4,7 @@ import { AuthControllers } from "../controllers/auth.controllers";
 import { userPostBody } from "../middlewares/users.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {
+    loginBody,
     rateLimiterUsingThirdParty,
     registrationConfirmationBody,
     registrationResendingEmailBody
@@ -27,5 +28,10 @@ router.post(
     '/registration-confirmation',
     rateLimiterUsingThirdParty(), ...registrationConfirmationBody, validatorsErrorsMiddleware,
     authControllers.registrationConfirmation.bind(authControllers)
+);
+router.post(
+    '/login',
+    rateLimiterUsingThirdParty(), ...loginBody, validatorsErrorsMiddleware,
+    authControllers.login.bind(authControllers)
 );
 export default router;

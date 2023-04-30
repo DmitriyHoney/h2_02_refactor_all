@@ -13,4 +13,6 @@ export const settings = {
     SMTP_SERVICE: process.env.SMTP_SERVICE,
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PWD: process.env.SMTP_PWD,
+    ACCESS_TOKEN_ALIVE: process.env.ACCESS_TOKEN_ALIVE || '10m',
+    REFRESH_TOKEN_ALIVE: process.env.REFRESH_TOKEN_ALIVE || '30m',
 };

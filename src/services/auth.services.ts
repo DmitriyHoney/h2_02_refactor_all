@@ -6,7 +6,7 @@ import {settings} from "../config/settings";
 import {UsersService} from "./users.services";
 import {emailManager} from "../managers/email.manager";
 import {ErrorsForControllers, HTTP_STATUSES} from "../config/baseTypes";
-import {errorGenerator} from "../helpers";
+import {comparePasswords, errorGenerator, isEmail} from "../helpers";
 
 @injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
     async registrationConfirmation(code: string) {
         const user = await this.usersService.usersQueryRepo.findByConfirmCode(code);
         if (!user) {
-            return errorGenerator.badRequest('User not found', 'email');
+            return errorGenerator.badRequest('User not found', 'code');
         }
         // @ts-ignore
         if (user.isConfirmedEmail?.isConfirmedEmail) {
@@ -54,5 +54,32 @@ export class AuthService {
             confirmedInfo: { code: '', isConfirmedEmail: true }
         });
         return { errorCode: null };
+    }
+    async login(body: { loginOrEmail: string, password: string }) {
+        const findUserMethod = isEmail(body.loginOrEmail)
+            ? this.usersService.usersQueryRepo.findByEmail.bind(this.usersService.usersQueryRepo)
+            : this.usersService.usersQueryRepo.findByLogin.bind(this.usersService.usersQueryRepo);
+
+        const user = await findUserMethod(body.loginOrEmail);
+        if (!user) {
+            return errorGenerator.notAuthorized('User not found', 'loginOrEmail');
+        }
+        const isPasswordValid = await comparePasswords(body.password, user?.password || 'none');
+        if (!isPasswordValid) {
+            return errorGenerator.notAuthorized('Password incoprrect', 'password');
+        }
+
+        const accessToken = jwtService.createJWT({
+            id: user.id,
+            login: user.login,
+            email: user.email
+        }, settings.ACCESS_TOKEN_ALIVE);
+        const refreshToken = jwtService.createJWT({
+            id: user.id,
+            login: user.login,
+            email: user.email
+        }, settings.REFRESH_TOKEN_ALIVE);
+
+        return { errorCode: null, accessToken, refreshToken };
     }
 }

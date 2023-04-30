@@ -23,6 +23,9 @@ export class UsersQueryRepo {
     findByEmail(email: string) {
         return baseRepositry.findByFields(this.User, { email: email }, {});
     }
+    findByLogin(login: string) {
+        return baseRepositry.findByFields(this.User, { login: login }, {});
+    }
     findByConfirmCode(code: string) {
         return baseRepositry.findByFields(this.User, { 'confirmedInfo.code': code }, {});
     }

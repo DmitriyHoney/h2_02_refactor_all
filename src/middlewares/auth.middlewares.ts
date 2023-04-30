@@ -26,6 +26,19 @@ export const registrationConfirmationBody = [
         .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
 ]
 
+export const loginBody = [
+    body('loginOrEmail')
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail()
+        .trim()
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail(),
+    body('password')
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail()
+        .trim()
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+]
+
 export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers?.authorization) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     const [prefix, authInfo] = req.headers.authorization?.split(' ');
