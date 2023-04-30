@@ -57,7 +57,7 @@ export const errorGenerator = {
             errorCode: HTTP_STATUSES.BAD_REQUEST_400,
             errorMessage: {
                 errorsMessages: [
-                    { message: 'User this email not found', field: 'email' }
+                    { message: msg, field: field }
                 ]
             }
         } as ErrorsForControllers
