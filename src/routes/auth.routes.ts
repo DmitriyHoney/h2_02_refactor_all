@@ -4,6 +4,7 @@ import { AuthControllers } from "../controllers/auth.controllers";
 import { userPostBody } from "../middlewares/users.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {
+    authJwtMiddleware,
     loginBody,
     rateLimiterUsingThirdParty,
     registrationConfirmationBody,
@@ -33,5 +34,10 @@ router.post(
     '/login',
     rateLimiterUsingThirdParty(), ...loginBody, validatorsErrorsMiddleware,
     authControllers.login.bind(authControllers)
+);
+router.post(
+    '/logout',
+    authJwtMiddleware,
+    authControllers.logout.bind(authControllers)
 );
 export default router;

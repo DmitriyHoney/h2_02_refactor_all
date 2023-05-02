@@ -14,6 +14,7 @@ export const configForTests = {
             registrationEmailResending: '/api/auth/registration-email-resending',
             registrationConfirmation: '/api/auth/registration-confirmation',
             login: '/api/auth/login',
+            logout: '/api/auth/logout',
         },
         securityDevice: '/api/security/devices'
     },

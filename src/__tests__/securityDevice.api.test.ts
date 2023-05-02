@@ -122,52 +122,99 @@ describe('/security/devices', () => {
                     .expect(HTTP_STATUSES.NOT_AUTHORIZED_401)
             });
             test('status 401 if refreshToken incorrect', async () => {
-                await request(`${configForTests.urls.securityDevice}/42`)
-                    .get(configForTests.urls.securityDevice)
+                await request(app)
+                    .delete(`${configForTests.urls.securityDevice}/42`)
                     .set('Cookie', user1AuthInfo.accessToken)
                     .expect(HTTP_STATUSES.NOT_AUTHORIZED_401)
             });
             test('status 404 if device not found', async () => {
                 const result = await request(app)
-                    .get(`${configForTests.urls.securityDevice}/42`)
+                    .delete(`${configForTests.urls.securityDevice}/42`)
                     .set('Cookie', user1AuthInfo.refreshToken)
                     .expect(HTTP_STATUSES.NOT_FOUND_404)
             });
             test('status 403 if try delete device another user', async () => {
                 await request(app)
                     // @ts-ignore
-                    .get(`${configForTests.urls.securityDevice}/${user2AuthInfo.devices[0].id}`)
+                    .delete(`${configForTests.urls.securityDevice}/${user2AuthInfo.devices[0].deviceId}`)
                     .set('Cookie', user1AuthInfo.refreshToken)
                     .expect(HTTP_STATUSES.FORBIDDEN_403)
             });
             test('status 204 device was delete success', async () => {
                 await request(app)
                     // @ts-ignore
-                    .get(`${configForTests.urls.securityDevice}/${user1AuthInfo.devices[0].id}`)
+                    .delete(`${configForTests.urls.securityDevice}/${user1AuthInfo.devices[0].deviceId}`)
                     .set('Cookie', user1AuthInfo.refreshToken)
                     .expect(HTTP_STATUSES.NO_CONTENT_204)
             });
         });
 
-
         describe('DELETE ALL', () => {
             test('status 401 if refreshToken is missing in cookie', async () => {
                 await request(app)
-                    .get(configForTests.urls.securityDevice)
+                    .delete(configForTests.urls.securityDevice)
                     .expect(HTTP_STATUSES.NOT_AUTHORIZED_401)
             });
             test('status 401 if refreshToken incorrect', async () => {
                 await request(app)
-                    .get(configForTests.urls.securityDevice)
+                    .delete(configForTests.urls.securityDevice)
                     .set('Cookie', user2AuthInfo.accessToken)
                     .expect(HTTP_STATUSES.NOT_AUTHORIZED_401)
             });
             test('status 204 devices was delete success', async () => {
                 await request(app)
-                    .get(configForTests.urls.securityDevice)
+                    .delete(configForTests.urls.securityDevice)
                     .set('Cookie', user2AuthInfo.refreshToken)
                     .expect(HTTP_STATUSES.NO_CONTENT_204)
             });
+        });
+    });
+
+    describe('Login user and logout must create device session and delete it', () => {
+        test('Delete all data', async () => {
+            await request(app)
+                .delete(configForTests.urls.deleteAll)
+                .expect(HTTP_STATUSES.NO_CONTENT_204, {});
+        });
+        test('create and login user', async () => {
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.users, configForTests.basicToken)
+                .send(userPayload)
+                .expect(HTTP_STATUSES.CREATED_201);
+
+            user1 = result.body;
+
+            const result1 = await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({
+                    loginOrEmail: userPayload.login,
+                    password: userPayload.password
+                })
+                .expect(HTTP_STATUSES.OK_200);
+
+            user1AuthInfo.accessToken = result1.body.accessToken;
+            user1AuthInfo.refreshToken = result1.headers['set-cookie'];
+        });
+        test('get session device must be 1', async () => {
+            const result = await request(app)
+                .get(configForTests.urls.securityDevice)
+                .set('Cookie', user1AuthInfo.refreshToken)
+                .expect(HTTP_STATUSES.OK_200)
+
+            user1AuthInfo.devices = result.body.items;
+            expect(result.body.items.length).toBe(1);
+        });
+        test('logout user, session device must be 0', async () => {
+            const result = await request(app)
+                .post(configForTests.urls.auth.logout)
+                .set('Cookie', user1AuthInfo.refreshToken)
+                .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+            const result2 = await request(app)
+                .get(configForTests.urls.securityDevice)
+                .set('Cookie', user1AuthInfo.refreshToken)
+                .expect(HTTP_STATUSES.OK_200)
+
+            expect(result2.body.items.length).toBe(0);
         });
     });
 });

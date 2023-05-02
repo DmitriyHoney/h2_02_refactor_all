@@ -284,4 +284,6 @@ describe('/auth', () => {
                 .expect(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         });
     });
+
+    // Tests for /logout - show in securityDevise.api.test.ts
 });

@@ -85,4 +85,7 @@ export class AuthService {
         this.securityDeviceService.addUserActiveDeviceSession(user, ipAddress, userAgent);
         return { errorCode: null, accessToken, refreshToken };
     }
+    async logout(userId: string, userIp: string, userAgent: string) {
+        return this.securityDeviceService.deleteUserDeviceSessionByIpAndTitle(userId, userIp, userAgent);
+    }
 }

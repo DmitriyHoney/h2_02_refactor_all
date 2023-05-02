@@ -60,4 +60,11 @@ export class AuthControllers {
             return res.status(HTTP_STATUSES.SERVER_ERROR_500).send(e);
         }
     }
+    async logout(
+        req: Request<{}, {}, {}, {}>,
+        res: Response
+    ) {
+        await this.authService.logout(req.context.user.id, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
+        res.status(HTTP_STATUSES.NO_CONTENT_204).send();
+    }
 }

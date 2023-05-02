@@ -16,6 +16,9 @@ export class SecurityDeviceQueryRepo {
     ) {
         return baseRepositry.find(this.Session, params, filters, {});
     }
+    findByDeviceId(deviceId: string) {
+        return baseRepositry.findByFields(this.Session, { deviceId });
+    }
 }
 
 @injectable()
@@ -32,5 +35,21 @@ export class SecurityDeviceCommandRepo {
             deviceId: randomUUID()
         });
         return String(createdRow._id);
+    }
+    async deleteByDeviceId(deviceId: string): Promise<Boolean> {
+        const deleted = await this.Session.deleteOne({ deviceId });
+        return deleted.deletedCount > 0;
+    }
+    async deleteByFields(fields: {}): Promise<Boolean> {
+        const deleted = await this.Session.deleteOne(fields);
+        return deleted.deletedCount > 0;
+    }
+    async deleteAllUserDevice(userId: string) {
+        const deleted = await this.Session.deleteMany({ userId });
+        return deleted.deletedCount > 0;
+    }
+    async deleteAllDevice() {
+        const deleted = await this.Session.deleteMany();
+        return deleted.deletedCount > 0;
     }
 }
