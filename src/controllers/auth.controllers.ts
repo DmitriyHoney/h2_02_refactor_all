@@ -67,4 +67,19 @@ export class AuthControllers {
         await this.authService.logout(req.context.user.id, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
         res.status(HTTP_STATUSES.NO_CONTENT_204).send();
     }
+    async passwordRecovery(
+        req: Request<{}, {}, { email: string }, {}>,
+        res: Response
+    ) {
+        await this.authService.passwordRecovery(req.body.email);
+        res.status(HTTP_STATUSES.NO_CONTENT_204).send();
+    }
+    async setNewPassword(
+        req: Request<{}, {}, { newPassword: string, recoveryCode: string }, {}>,
+        res: Response
+    ) {
+        const result = await this.authService.setNewPassword(req.body.newPassword, req.body.recoveryCode);
+        if (result.errorCode) return res.status(result.errorCode).send(result.errorMessage);
+        res.status(HTTP_STATUSES.NO_CONTENT_204).send();
+    }
 }

@@ -45,6 +45,31 @@ export const loginBody = [
         .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
 ]
 
+export const passwordRecoveryBody = [
+    body('email')
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail()
+        .trim()
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .custom((value) => {
+            if (!isEmail(value)) throw new Error(VALIDATION_ERROR_MSG.EMAIL_NOT_VALID_TEMPLATE);
+            return true;
+        }),
+];
+
+export const newPasswordBody = [
+    body('newPassword')
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail()
+        .trim()
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail(),
+    body('recoveryCode')
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail()
+        .trim()
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+];
+
 export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers?.authorization) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     const [prefix, authInfo] = req.headers.authorization?.split(' ');

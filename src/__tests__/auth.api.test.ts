@@ -5,6 +5,7 @@ import { configForTests } from './baseConfig';
 import app from "../app";
 import {UserPostT} from "../models/users.models";
 import {jwtService} from "../managers/jwt.manager";
+import exp = require("constants");
 
 // @ts-ignore
 const userPayload: UserPostT = {
@@ -286,4 +287,85 @@ describe('/auth', () => {
     });
 
     // Tests for /logout - show in securityDevise.api.test.ts
+
+    describe('/password-recovery & /new-password', () => {
+        const newPwd: string = '87654321';
+        let confirmationCode: string = '';
+        test('/password-recovery - Should return 400 if incorrect body', async () => {
+            const result = await request(app)
+                .post(configForTests.urls.auth.passwordRecovery)
+                .send({})
+                .expect(HTTP_STATUSES.BAD_REQUEST_400);
+
+            expect(result.body).toEqual({
+                errorsMessages: [
+                    {
+                        message: expect.any(String),
+                        field: 'email'
+                    }
+                ]
+            } as ValidationErrors);
+        });
+        test('/password-recovery - Should return 204 and send email confirmation code email', async () => {
+            await request(app)
+                .post(configForTests.urls.auth.passwordRecovery)
+                .send({
+                    email: userEmail.emailAddress
+                })
+                .expect(HTTP_STATUSES.NO_CONTENT_204);
+        });
+        test('/password-recovery - email was get confirmation code', async () => {
+            confirmationCode = await configForTests.getVerificationRecoveryCode(userEmail.id);
+            const isValidCode = jwtService.verifyToken(confirmationCode);
+            expect(confirmationCode).toBeTruthy();
+            expect(confirmationCode.length).toBeGreaterThan(1);
+            expect(isValidCode).toBeTruthy();
+        });
+        test('/password-recovery - Should return 429 more than 5 attempts from one IP-address during 10 seconds', async () => {
+            const promises = [];
+            for (let i = 1; i <= 5; i++) {
+                promises.push(request(app)
+                    .post(configForTests.urls.auth.passwordRecovery)
+                    .send({}))
+            }
+            await Promise.all(promises);
+
+            request(app)
+                .post(configForTests.urls.auth.passwordRecovery)
+                .send({})
+                .expect(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
+        });
+
+        test('/new-password - Should return 400 if incorrect body', async () => {
+            await request(app)
+                .post(configForTests.urls.auth.newPassword)
+                .send({
+                    email: userEmail.emailAddress
+                })
+                .expect(HTTP_STATUSES.BAD_REQUEST_400);
+        });
+        test('/new-password - Should return 204 user success change password', async () => {
+            const result = await request(app)
+                .post(configForTests.urls.auth.newPassword)
+                .send({
+                    newPassword: newPwd,
+                    recoveryCode: confirmationCode,
+                })
+                .expect(HTTP_STATUSES.NO_CONTENT_204);
+        });
+
+        test('/new-password - Should return 429', async () => {
+            const promises = [];
+            for (let i = 1; i <= 5; i++) {
+                promises.push(request(app)
+                    .post(configForTests.urls.auth.newPassword)
+                    .send({}))
+            }
+            await Promise.all(promises);
+
+            request(app)
+                .post(configForTests.urls.auth.newPassword)
+                .send({})
+                .expect(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
+        });
 });

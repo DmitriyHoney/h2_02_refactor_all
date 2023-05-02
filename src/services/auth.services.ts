@@ -6,7 +6,7 @@ import {settings} from "../config/settings";
 import {UsersService} from "./users.services";
 import {emailManager} from "../managers/email.manager";
 import {ErrorsForControllers, HTTP_STATUSES} from "../config/baseTypes";
-import {comparePasswords, errorGenerator, isEmail} from "../helpers";
+import {comparePasswords, errorGenerator, hashPassword, isEmail} from "../helpers";
 import {SecurityDeviceService} from "./securityDevice.services";
 
 @injectable()
@@ -87,5 +87,22 @@ export class AuthService {
     }
     async logout(userId: string, userIp: string, userAgent: string) {
         return this.securityDeviceService.deleteUserDeviceSessionByIpAndTitle(userId, userIp, userAgent);
+    }
+    async passwordRecovery(email: string) {
+        const code = jwtService.createJWT({ email }, settings.EXP_CONFIRM_CODE);
+        emailManager.sendRecoverPassCodeConfirm(email, code);
+    }
+    async setNewPassword(newPwd: string, code: string) {
+        const isConfirmationCodeValid = await jwtService.verifyToken(code);
+        if (!isConfirmationCodeValid) return errorGenerator.notAuthorized('Recovery code not valid', 'recoveryCode');
+        // @ts-ignore
+        const userEmail = isConfirmationCodeValid.email;
+        const user = await this.usersService.usersQueryRepo.findByEmail(userEmail);
+        if (!user) return { errorCode: null };
+
+        const password = await hashPassword(newPwd);
+        // @ts-ignore
+        await this.usersService.update(user.id, { password });
+        return { errorCode: null };
     }
 }

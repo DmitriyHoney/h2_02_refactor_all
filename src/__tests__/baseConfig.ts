@@ -15,6 +15,8 @@ export const configForTests = {
             registrationConfirmation: '/api/auth/registration-confirmation',
             login: '/api/auth/login',
             logout: '/api/auth/logout',
+            passwordRecovery: '/api/auth/password-recovery',
+            newPassword: '/api/auth/new-password',
         },
         securityDevice: '/api/security/devices'
     },
@@ -40,10 +42,20 @@ export const configForTests = {
     },
     async getVerificationCode(inboxId: string) {
         await this.smptApi.inboxController.deleteAllInboxEmails({ inboxId });
-        const emails = await this.smptApi.waitForLatestEmail(inboxId, 10000);
+        const emails = await this.smptApi.waitForLatestEmail(inboxId, 15000);
         try {
             // @ts-ignore
             return /code=(.*?')/.exec(emails.body)![1].replace(/'/, '');
+        } catch {
+            return '';
+        }
+    },
+    async getVerificationRecoveryCode(inboxId: string) {
+        await this.smptApi.inboxController.deleteAllInboxEmails({ inboxId });
+        const emails = await this.smptApi.waitForLatestEmail(inboxId, 15000);
+        try {
+            // @ts-ignore
+            return /recoveryCode=(.*?')/.exec(emails.body)![1].replace(/'/, '');
         } catch {
             return '';
         }

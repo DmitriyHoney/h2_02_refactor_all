@@ -50,7 +50,9 @@ export class UsersCommandRepo {
         return String(createdRow._id);
     }
     async update(id: string, userPayload: UserUpdateT): Promise<string | null> {
-        const createdRow = await this.User.findByIdAndUpdate(id, userPayload);
+        console.log(id);
+        if (!ObjectId.isValid(id)) return Promise.resolve(null);
+        const createdRow = await this.User.findByIdAndUpdate({ _id: id }, userPayload);
         return createdRow ? String(createdRow._id) : null;
     }
     async deleteAll() {

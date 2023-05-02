@@ -5,7 +5,8 @@ import { userPostBody } from "../middlewares/users.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {
     authJwtMiddleware,
-    loginBody,
+    loginBody, newPasswordBody,
+    passwordRecoveryBody,
     rateLimiterUsingThirdParty,
     registrationConfirmationBody,
     registrationResendingEmailBody
@@ -39,5 +40,15 @@ router.post(
     '/logout',
     authJwtMiddleware,
     authControllers.logout.bind(authControllers)
+);
+router.post(
+    '/password-recovery',
+    rateLimiterUsingThirdParty(), ...passwordRecoveryBody, validatorsErrorsMiddleware,
+    authControllers.passwordRecovery.bind(authControllers)
+);
+router.post(
+    '/new-password',
+    rateLimiterUsingThirdParty(), ...newPasswordBody, validatorsErrorsMiddleware,
+    authControllers.setNewPassword.bind(authControllers)
 );
 export default router;
