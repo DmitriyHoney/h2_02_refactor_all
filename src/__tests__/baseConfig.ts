@@ -17,6 +17,11 @@ export const configForTests = {
             logout: '/api/auth/logout',
             passwordRecovery: '/api/auth/password-recovery',
             newPassword: '/api/auth/new-password',
+            refreshToken: '/api/auth/refresh-token',
+            me: '/api/auth/me',
+        },
+        blogs: {
+            all: '/api/blogs',
         },
         securityDevice: '/api/security/devices'
     },

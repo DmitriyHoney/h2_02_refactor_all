@@ -5,7 +5,6 @@ import {jwtService} from "../managers/jwt.manager";
 import {settings} from "../config/settings";
 import {UsersService} from "./users.services";
 import {emailManager} from "../managers/email.manager";
-import {ErrorsForControllers, HTTP_STATUSES} from "../config/baseTypes";
 import {comparePasswords, errorGenerator, hashPassword, isEmail} from "../helpers";
 import {SecurityDeviceService} from "./securityDevice.services";
 
@@ -104,5 +103,28 @@ export class AuthService {
         // @ts-ignore
         await this.usersService.update(user.id, { password });
         return { errorCode: null };
+    }
+    async refreshToken(userId: string, userIp: string, userAgent: string) {
+        // @ts-ignore
+        const user = this.usersService.usersQueryRepo.findById(userId);
+        if (!user) return errorGenerator.notAuthorized('refreshToken expired or incorrect', 'refreshToken');
+
+
+        const accessToken = jwtService.createJWT({
+            // @ts-ignore
+            id: user.id, login: user.login, email: user.email
+        }, settings.ACCESS_TOKEN_ALIVE);
+
+        const refreshToken = jwtService.createJWT({
+            // @ts-ignore
+            id: user.id, login: user.login, email: user.email
+        }, settings.REFRESH_TOKEN_ALIVE);
+
+        await this.securityDeviceService.deleteUserDeviceSessionByIpAndTitle(userId, userIp, userAgent);
+        await this.securityDeviceService.addUserActiveDeviceSession(user, userIp, userAgent);
+        return { errorCode: null, accessToken, refreshToken };
+    }
+    async getMeInfo(userId: string) {
+        return await this.usersService.usersQueryRepo.meInfoById(userId);
     }
 }

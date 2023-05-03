@@ -96,6 +96,30 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
     next();
 };
 
+export const authJwtAccessMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.headers.authorization) {
+        if (req?.context?.user) req.context.user = null;
+        return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
+    }
+    const token = req.headers.authorization.split(' ')[1];
+
+    const payload = jwtService.verifyToken(token);
+
+    if (payload) {
+        if (!req.context) req.context = { user: null };
+        // @ts-ignore
+        req.context.user = await userService.usersQueryRepo.findById(payload.id);
+        if (!req.context.user) {
+            req.context.user = null;
+            return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
+        }
+        next();
+    } else {
+        if (req?.context?.user) req.context.user = null;
+        return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
+    }
+};
+
 export const rateLimiterUsingThirdParty = (ms = 10000, max = 5) => {
     return rateLimit({
         windowMs: ms,

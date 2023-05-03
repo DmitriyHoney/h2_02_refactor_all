@@ -27,7 +27,6 @@ const generateUserEmailAndUpdatePayload = async () => {
     userPayload.email = userEmail.emailAddress;
     return userEmail?.id ? true : false;
 }
-
 describe('/auth', () => {
     beforeAll(async () => {
         configForTests.startTestServer();
@@ -287,9 +286,8 @@ describe('/auth', () => {
     });
 
     // Tests for /logout - show in securityDevise.api.test.ts
-
+    const newPwd: string = '87654321';
     describe('/password-recovery & /new-password', () => {
-        const newPwd: string = '87654321';
         let confirmationCode: string = '';
         test('/password-recovery - Should return 400 if incorrect body', async () => {
             const result = await request(app)
@@ -368,4 +366,86 @@ describe('/auth', () => {
                 .send({})
                 .expect(HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         });
+
+
+        test('check login user with new password', async () => {
+            await new Promise((r) => setTimeout(r, 11000));
+            await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({
+                    loginOrEmail: userPayload.login,
+                    password: userPayload.password
+                })
+                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
+            await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({
+                    loginOrEmail: userPayload.login,
+                    password: newPwd
+                })
+                .expect(HTTP_STATUSES.OK_200);
+        });
+    });
+
+    describe('/refresh-token & /me', () => {
+        let refreshTokenCookie: string = '';
+        let accessToken: string = '';
+        test('login user', async () => {
+
+            const result = await request(app)
+                .post(configForTests.urls.auth.login)
+                .send({
+                    loginOrEmail: userPayload.email,
+                    password: newPwd
+                })
+                .expect(HTTP_STATUSES.OK_200);
+
+            const cookies = result.headers['set-cookie'];
+            refreshTokenCookie = cookies.find((i: string) => i.indexOf('refreshToken') >= 0);
+        });
+        test('/refresh-token Should return 401 if JWT in refresh incorrect', async () => {
+            await request(app)
+                .post(configForTests.urls.auth.refreshToken)
+                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401)
+        });
+        test('/refresh-token Should return 200 - body has access & cookie has refresh', async () => {
+            const result = await request(app)
+                .post(configForTests.urls.auth.refreshToken)
+                .set('Cookie', refreshTokenCookie)
+                .expect(HTTP_STATUSES.OK_200);
+
+            expect(result.body).toEqual({
+                accessToken: expect.any(String),
+            });
+
+            accessToken = result.body.accessToken;
+
+            const cookies = result.headers['set-cookie'];
+            refreshTokenCookie = cookies.find((i: string) => i.indexOf('refreshToken') >= 0);
+            expect(refreshTokenCookie).toBeTruthy();
+
+            const isHttpOnly = refreshTokenCookie.indexOf('HttpOnly') >= 0;
+            expect(isHttpOnly).toBeTruthy();
+
+            const isSecure = refreshTokenCookie.indexOf('Secure') >= 0;
+            expect(isSecure).toBeTruthy();
+        });
+
+        test('/me - Should return 401 if user has not authorized token in header', async () => {
+            await request(app)
+                .get(configForTests.urls.auth.me)
+                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
+        });
+        test('/me - Should return 200 and user info', async () => {
+            const result = await configForTests.reqWithAuthHeader('get', configForTests.urls.auth.me, `Bearer ${accessToken}`)
+                .get(configForTests.urls.auth.me)
+                .expect(HTTP_STATUSES.OK_200);
+
+            expect(result.body).toEqual({
+                email: expect.any(String),
+                login: expect.any(String),
+                userId: expect.any(String),
+            });
+        });
+    });
 });

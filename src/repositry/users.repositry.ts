@@ -37,6 +37,16 @@ export class UsersQueryRepo {
             updatedAt: 0,
         });
     }
+
+    async meInfoById(userId: string) {
+        const user = await baseRepositry.findById(this.User, userId, {});
+        if (!user) return null;
+        return {
+            email: user.email,
+            login: user.login,
+            userId: user.id,
+        }
+    }
 }
 
 @injectable()
