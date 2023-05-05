@@ -4,6 +4,7 @@ import { Server } from 'http';
 import request from 'supertest';
 import app from '../app';
 import MailSlurp, {CreateInboxRequest} from "mailslurp-client";
+import {jwtService} from "../managers/jwt.manager";
 
 export const configForTests = {
     urls: {
@@ -25,6 +26,9 @@ export const configForTests = {
         },
         posts: {
             all: '/api/posts',
+        },
+        comments: {
+            all: '/api/comments',
         },
         securityDevice: '/api/security/devices'
     },
@@ -67,5 +71,12 @@ export const configForTests = {
         } catch {
             return '';
         }
+    },
+    async getFailedUserAccessToken() {
+        return await jwtService.createJWT({
+            id: '6450de1f045521f880a34350',
+            login: 'loginnn',
+            email: 'user.email'
+        }, '10m');
     }
 }

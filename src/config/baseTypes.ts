@@ -26,6 +26,12 @@ export const VALIDATION_ERROR_MSG = {
     USER_THIS_LOGIN_EXIST: 'User this login already exist',
 };
 
+export enum Likes {
+    LIKE = 'Like',
+    DISLIKE = 'Dislike',
+    NONE = 'None',
+}
+
 export type BaseQueryT = {
     pageSize?: string,
     pageNumber?: string,

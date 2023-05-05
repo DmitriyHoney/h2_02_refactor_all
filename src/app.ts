@@ -11,6 +11,7 @@ import authRoute from './routes/auth.routes';
 import securityDevicesRoute from './routes/securityDevice.routes';
 import blogsRoute from './routes/blogs.routes';
 import postsRoute from './routes/posts.routes';
+import postsCommentsRoute from './routes/postComments.routes';
 import testRoute from './routes/test.routes';
 import {HTTP_STATUSES} from "./config/baseTypes";
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/security/devices', securityDevicesRoute);
 app.use('/api/blogs', blogsRoute);
 app.use('/api/posts', postsRoute);
+app.use('/api/comments', postsCommentsRoute);
 app.use('/api/testing/all-data', testRoute);
 app.get('*', (req, res) => res.status(HTTP_STATUSES.NOT_FOUND_404).send('Not found'));
 

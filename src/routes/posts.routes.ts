@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import container from '../composition/posts.composition';
 import { PostsControllers } from "../controllers/posts.controllers";
-import {authJwtAccessMiddleware} from "../middlewares/auth.middlewares";
+import {authJwtAccessMiddleware, authJwtMiddleware} from "../middlewares/auth.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {createPostsBody} from "../middlewares/posts.middlewares";
+import {createPostsCommentsBody} from "../middlewares/postsComments.middlewares";
 
 const postControllers = container.resolve(PostsControllers);
 
@@ -28,4 +29,16 @@ router.delete(
     authJwtAccessMiddleware,
     postControllers.deleteOne.bind(postControllers)
 );
+router.get(
+    '/:id/comments/',
+    authJwtMiddleware,
+    postControllers.getComments.bind(postControllers)
+);
+router.post(
+    '/:id/comments/',
+    authJwtAccessMiddleware,
+    ...createPostsCommentsBody, validatorsErrorsMiddleware,
+    postControllers.createComment.bind(postControllers)
+);
+
 export default router;
