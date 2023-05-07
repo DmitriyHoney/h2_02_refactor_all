@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
 import {PostComment, PostCommentBodyT} from '../models/postsComments.models';
-import {BaseQueryT} from "../config/baseTypes";
+import {BaseQueryT, Likes} from "../config/baseTypes";
 import {baseRepositry} from "./base.repositry";
 import {ObjectId} from "mongodb";
 
@@ -20,7 +20,7 @@ export class PostsCommentsQueryRepo {
             // @ts-ignore
             ...result,
             // @ts-ignore
-            items: result.items.map((i) => commentMap(i))
+            items: result.items.map((i) => commentMap(i, userId))
         }
     }
 
@@ -34,15 +34,15 @@ export class PostsCommentsQueryRepo {
         return baseRepositry.findByFields(this.PostComment, { 'confirmedInfo.code': code }, {});
     }
 
-    async findById(id: string) {
+    async findById(id: string, userId: string) {
         if (!ObjectId.isValid(id)) return Promise.resolve(false);
         let row = await baseRepositry.findById(this.PostComment, id, {});
         if (!row) return false;
-        return commentMap(row);
+        return commentMap(row, userId);
     }
 }
 
-function commentMap(i: any) {
+function commentMap(i: any, userId: string) {
     return {
         id: i.id,
         content: i.content,
@@ -55,7 +55,7 @@ function commentMap(i: any) {
         likesInfo: {
             likesCount: i.likesInfo.likesCount,
             dislikesCount: i.likesInfo.dislikesCount,
-            myStatus: "None"
+            myStatus: i.likesInfo?.usersStatistics[userId] ? i.likesInfo?.usersStatistics[userId] : Likes.NONE
         }
     }
 }
@@ -70,9 +70,9 @@ export class PostsCommentsCommandRepo {
         const createdRow = await this.PostComment.create(user);
         return String(createdRow._id);
     }
-    async update(id: string, userPayload: PostCommentBodyT): Promise<string | null> {
+    async update(id: string, payload: PostCommentBodyT): Promise<string | null> {
         if (!ObjectId.isValid(id)) return Promise.resolve(null);
-        const createdRow = await this.PostComment.findByIdAndUpdate({ _id: id }, userPayload);
+        const createdRow = await this.PostComment.findByIdAndUpdate({ _id: id }, payload);
         return createdRow ? String(createdRow._id) : null;
     }
     async deleteAll() {

@@ -75,7 +75,7 @@ export class PostsControllers {
         if (!result) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         // @ts-ignore
         const commentId = await this.postsCommentsService.create(req.context.user, result.id, req.body);
-        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(commentId);
+        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(commentId, req.context.user.id);
         res.status(HTTP_STATUSES.CREATED_201).send(comment);
     }
     async getComments(

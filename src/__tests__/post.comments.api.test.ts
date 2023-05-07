@@ -307,6 +307,14 @@ describe('/posts', () => {
     });
 
     describe('/like-status', () => {
+        test('create comment', async () => {
+            // @ts-ignore
+            const result = await configForTests.reqWithAuthHeader('post', `${configForTests.urls.posts.all}/${createdPost.id}/comments`, `Bearer ${userAccessRefreshTokens.access}`)
+                .send(createCommentPayload)
+                .expect(HTTP_STATUSES.CREATED_201);
+
+            createdComment = result.body;
+        });
         test('unathorized 401', async () => {
             request(configForTests.app)
                 // @ts-ignore
@@ -330,7 +338,7 @@ describe('/posts', () => {
         });
         test('user1 add like status to comment 204', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('put', `${createdComment.id}/42/like-status`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.comments.all}/${createdComment.id}/like-status`, `Bearer ${userAccessRefreshTokens.access}`)
                 .send({
                     likeStatus: Likes.LIKE
                 })

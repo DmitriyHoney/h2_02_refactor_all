@@ -30,17 +30,20 @@ export class PostsCommentsService {
     async deleteAll() {
         return await this.postsCommentsCommandRepo.deleteAll();
     }
-    async likeUnlikeComment(id: string, likeStatus: string, likesInfo: any, userId: string) {
+    async likeUnlikeComment(id: string, likeStatus: string, comment: any, userId: string) {
+        const likesInfo = comment.likesInfo;
         const oldStatus = likesInfo.myStatus;
         if (oldStatus === Likes.LIKE) likesInfo.likesCount--;
         else if (oldStatus === Likes.DISLIKE) likesInfo.dislikesCount--;
 
         const newStatus = likeStatus;
-        if (newStatus === Likes.LIKE) likesInfo.likesCount--;
-        else if (newStatus === Likes.DISLIKE) likesInfo.dislikesCount--;
+        if (newStatus === Likes.LIKE) likesInfo.likesCount++;
+        else if (newStatus === Likes.DISLIKE) likesInfo.dislikesCount++;
 
+        if (!likesInfo.usersStatistics) likesInfo.usersStatistics = {};
         likesInfo.usersStatistics[userId] = newStatus;
 
-        return await this.update(id, likesInfo);
+        delete likesInfo.myStatus;
+        return await this.update(id, { ...comment, likesInfo });
     }
 }
