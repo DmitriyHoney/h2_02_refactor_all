@@ -18,7 +18,7 @@ export class PostsControllers {
     ) {
         const { pageSize, pageNumber, sortBy, sortDirection} = req.query;
         const result = await this.postsService.postsQueryRepo.find(
-            req.context.user.id,
+            req?.context?.user?.id,
             { pageSize, pageNumber, sortBy, sortDirection },
             {}
         );
@@ -29,7 +29,7 @@ export class PostsControllers {
         req: Request<{ id: string }, {}, {}, BaseGetQueryParams>,
         res: Response
     ) {
-        const result = await this.postsService.postsQueryRepo.findById(req.params.id, req.context.user.id);
+        const result = await this.postsService.postsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!result) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         return res.status(HTTP_STATUSES.OK_200).send(result);
     }
@@ -40,7 +40,7 @@ export class PostsControllers {
     ) {
         try {
             const blogId = await this.postsService.create(req.body);
-            const blog = await this.postsService.postsQueryRepo.findById(blogId, req.context.user.id);
+            const blog = await this.postsService.postsQueryRepo.findById(blogId, req?.context?.user?.id);
             res.status(HTTP_STATUSES.CREATED_201).send(blog);
         } catch (e) {
             const error = (e as Error);
@@ -72,24 +72,24 @@ export class PostsControllers {
         req: Request<{ id: string }, {}, {}, {}>,
         res: Response
     ) {
-        const result = await this.postsService.postsQueryRepo.findById(req.params.id, req.context.user.id);
+        const result = await this.postsService.postsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!result) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         // @ts-ignore
         const commentId = await this.postsCommentsService.create(req.context.user, result.id, req.body);
-        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(commentId, req.context.user.id);
+        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(commentId, req?.context?.user?.id);
         res.status(HTTP_STATUSES.CREATED_201).send(comment);
     }
     async getComments(
         req: Request<{ id: string }, {}, {}, BaseGetQueryParams>,
         res: Response
     ) {
-        const result = await this.postsService.postsQueryRepo.findById(req.params.id, req.context.user.id);
+        const result = await this.postsService.postsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!result) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
 
         const { pageSize, pageNumber, sortBy, sortDirection } = req.query;
 
         const comment = await this.postsCommentsService.postsCommentsQueryRepo.find(
-            req.context.user.id,
+            req?.context?.user?.id,
             { pageSize, pageNumber, sortBy, sortDirection },
             { postId: req.params.id }
         );
@@ -99,7 +99,7 @@ export class PostsControllers {
         req: Request<{ id: string }, {}, {}, BaseGetQueryParams>,
         res: Response
     ) {
-        const post = await this.postsService.postsQueryRepo.findById(req.params.id, req.context.user.id);
+        const post = await this.postsService.postsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!post) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         // @ts-ignore
         await this.postsService.likeUnlikePost(req.params.id, req.body.likeStatus, post, req.context.user);

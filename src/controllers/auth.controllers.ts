@@ -64,7 +64,7 @@ export class AuthControllers {
         req: Request<{}, {}, {}, {}>,
         res: Response
     ) {
-        await this.authService.logout(req.context.user.id, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
+        await this.authService.logout(req?.context?.user?.id, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
         res.status(HTTP_STATUSES.NO_CONTENT_204).send();
     }
     async passwordRecovery(
@@ -86,7 +86,7 @@ export class AuthControllers {
         req: Request<{}, {}, {}, {}>,
         res: Response
     ) {
-        const result = await this.authService.refreshToken(req.context.user.id, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
+        const result = await this.authService.refreshToken(req?.context?.user?.id, getUserIp(req), req.get('User-Agent') || 'user agent unknown');
         if (result.errorCode) return res.status(result.errorCode).send(result.errorMessage);
         res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true });
         res.status(HTTP_STATUSES.OK_200).send({ accessToken: result.accessToken });
@@ -95,7 +95,7 @@ export class AuthControllers {
         req: Request<{}, {}, {}, {}>,
         res: Response
     ) {
-        const user = await this.authService.getMeInfo(req.context.user.id);
+        const user = await this.authService.getMeInfo(req?.context?.user?.id);
         if (!user) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         res.status(HTTP_STATUSES.OK_200).send(user);
     }

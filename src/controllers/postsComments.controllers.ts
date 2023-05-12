@@ -14,7 +14,7 @@ export class PostsCommentsControllers {
     ) {
         const { pageSize, pageNumber, sortBy, sortDirection} = req.query;
         const result = await this.postsCommentsService.postsCommentsQueryRepo.find(
-            req.context.user.id,
+            req?.context?.user?.id,
             { pageSize, pageNumber, sortBy, sortDirection },
             {}
         );
@@ -25,7 +25,7 @@ export class PostsCommentsControllers {
         req: Request<{ id: string }, {}, {}, BaseGetQueryParams>,
         res: Response
     ) {
-        const result = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req.context.user.id);
+        const result = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!result) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         return res.status(HTTP_STATUSES.OK_200).send(result);
     }
@@ -36,7 +36,7 @@ export class PostsCommentsControllers {
     ) {
         try {
             const blogId = await this.postsCommentsService.create(req.context.user, req.params.id, req.body);
-            const blog = await this.postsCommentsService.postsCommentsQueryRepo.findById(blogId, req.context.user.id);
+            const blog = await this.postsCommentsService.postsCommentsQueryRepo.findById(blogId, req?.context?.user?.id);
             res.status(HTTP_STATUSES.CREATED_201).send(blog);
         } catch (e) {
             const error = (e as Error);
@@ -48,10 +48,10 @@ export class PostsCommentsControllers {
         res: Response
     ) {
         try {
-            const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req.context.user.id);
+            const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req?.context?.user?.id);
             if (!comment) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
             // @ts-ignore
-            if (comment && comment.commentatorInfo.userId !== req.context.user.id) return res.status(HTTP_STATUSES.FORBIDDEN_403).send();
+            if (comment && comment.commentatorInfo.userId !== req?.context?.user?.id) return res.status(HTTP_STATUSES.FORBIDDEN_403).send();
             const isUpdated = await this.postsCommentsService.update(req.params.id, req.body);
             if (!isUpdated) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
             return res.status(HTTP_STATUSES.NO_CONTENT_204).send({});
@@ -64,10 +64,10 @@ export class PostsCommentsControllers {
         req: Request<{ id: string }, {}, {}, {}>,
         res: Response
     ) {
-        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req.context.user.id);
+        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!comment) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         // @ts-ignore
-        if (comment.commentatorInfo.userId !== req.context.user.id) return res.status(HTTP_STATUSES.FORBIDDEN_403).send();
+        if (comment.commentatorInfo.userId !== req?.context?.user?.id) return res.status(HTTP_STATUSES.FORBIDDEN_403).send();
         const isWasDeleted = await this.postsCommentsService.deleteOne(req.params.id);
         if (!isWasDeleted) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         return res.status(HTTP_STATUSES.NO_CONTENT_204).send();
@@ -76,10 +76,10 @@ export class PostsCommentsControllers {
         req: Request<{ id: string }, {}, { likeStatus: string }, {}>,
         res: Response
     ) {
-        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req.context.user.id);
+        const comment = await this.postsCommentsService.postsCommentsQueryRepo.findById(req.params.id, req?.context?.user?.id);
         if (!comment) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         // @ts-ignore
-        await this.postsCommentsService.likeUnlikeComment(req.params.id, req.body.likeStatus, comment, req.context.user.id);
+        await this.postsCommentsService.likeUnlikeComment(req.params.id, req.body.likeStatus, comment, req?.context?.user?.id);
         res.status(HTTP_STATUSES.NO_CONTENT_204).send();
     }
 }
