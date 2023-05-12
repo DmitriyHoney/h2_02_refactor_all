@@ -19,12 +19,11 @@ const postsCommentsService = postsContainer.resolve(PostsCommentsService);
 
 router.delete('/', (req, res) => {
     Promise.all([
-        userService.deleteAll(),
-        deviceService.deleteAllDevice(),
         blogService.deleteAll(),
         postService.deleteAll(),
+        userService.deleteAll(),
+        deviceService.deleteAllDevice(),
         postsCommentsService.deleteAll(),
-        // TODO: add logic delete all devices
     ]).then((result) => {
         res.status(HTTP_STATUSES.NO_CONTENT_204).send();
     }).catch((err) => {
