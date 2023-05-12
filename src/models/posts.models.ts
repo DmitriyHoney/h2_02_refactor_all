@@ -8,8 +8,8 @@ export const postsSchema = new Schema({
     blogId: String,
     blogName: { type: String, require: false },
     extendedLikesInfo: {
-        likesCount: Number,
-        dislikesCount: Number,
+        likesCount: { type: Number, default: 0 },
+        dislikesCount: { type: Number, default: 0 },
         myStatus: String,
         newestLikes: [],
     }

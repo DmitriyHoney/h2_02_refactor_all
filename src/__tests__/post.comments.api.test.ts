@@ -123,6 +123,7 @@ describe('/posts', () => {
         test('Get all should return 200', async () => {
             const result = await request(app)
                 .get(configForTests.urls.posts.all)
+                .set('Cookie', userAccessRefreshTokens.refresh)
                 .expect(HTTP_STATUSES.OK_200);
 
             expect(result.body.items.length).toBe(0);

@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { VALIDATION_ERROR_MSG } from '../config/baseTypes';
+import {Likes, VALIDATION_ERROR_MSG} from '../config/baseTypes';
 import container from '../composition/blogs.composition';
 import {BlogsService} from "../services/blogs.services";
 
@@ -36,4 +36,17 @@ export const createPostsBody = [
     body('blogName')
         .optional()
         .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail(),
+]
+
+export const createPostsLikeBody = [
+    body('likeStatus')
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .isString().withMessage(VALIDATION_ERROR_MSG.IS_STRING).bail()
+        .trim()
+        .notEmpty().withMessage(VALIDATION_ERROR_MSG.REQUIRED).bail()
+        .custom(async (v, { req }) => {
+            const isReqStrValid = [Likes.NONE, Likes.LIKE, Likes.DISLIKE].includes(req.body.likeStatus);
+            if (!isReqStrValid) throw new Error(VALIDATION_ERROR_MSG.OUT_OF_RANGE);
+            return true;
+        }),
 ]

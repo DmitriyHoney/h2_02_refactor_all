@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
 import {Post, PostInputT} from '../models/posts.models';
-import {BaseQueryT} from "../config/baseTypes";
+import {BaseQueryT, Likes} from "../config/baseTypes";
 import {baseRepositry} from "./base.repositry";
 import {ObjectId} from "mongodb";
 
@@ -10,15 +10,52 @@ export class PostsQueryRepo {
     constructor() {
         this.Post = Post;
     }
-    find(
+    async find(
+        userId: string,
         params: BaseQueryT,
         filters: {}
     ) {
-        return baseRepositry.find(this.Post, params, filters, {});
+        const result = await baseRepositry.find(this.Post, params, filters, {});
+        return {
+            // @ts-ignore
+            ...result,
+            // @ts-ignore
+            items: result.items.map((i) => postMap(i, userId))
+        }
     }
-    async findById(id: string) {
+    async findById(id: string, userId: string) {
         if (!ObjectId.isValid(id)) return Promise.resolve(false);
-        return await baseRepositry.findById(this.Post, id, {});
+        let row = await baseRepositry.findById(this.Post, id, {});
+        if (!row) return false;
+        return postMap(row, userId);
+    }
+}
+
+function postMap(i: any, userId: string) {
+    const userStatus =i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
+    const newestLikes =i.extendedLikesInfo?.newestLikes
+        .filter((i: any) => i.status === Likes.LIKE)
+        .map((i: any) => {
+            return {
+                addedAt: i.addedAt,
+                userId: i.userId,
+                login: i.login,
+            }
+        });
+    return {
+        id: i.id,
+        title: i.content,
+        shortDescription: i.shortDescription,
+        content: i.content,
+        blogId: i.blogId,
+        blogName: i.blogName,
+        createdAt: i.createdAt,
+        extendedLikesInfo: {
+            likesCount: i.extendedLikesInfo.likesCount,
+            dislikesCount: i.extendedLikesInfo.dislikesCount,
+            myStatus: userStatus ? userStatus.status : Likes.NONE,
+            newestLikes: newestLikes,
+        }
     }
 }
 

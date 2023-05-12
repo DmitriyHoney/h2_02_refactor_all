@@ -1,9 +1,10 @@
 import request from 'supertest';
 
-import {HTTP_STATUSES, VALIDATION_ERROR_MSG, ValidationErrors} from '../config/baseTypes';
+import {HTTP_STATUSES, Likes, VALIDATION_ERROR_MSG, ValidationErrors} from '../config/baseTypes';
 import { configForTests } from './baseConfig';
 import app from "../app";
 import {UserPostT} from "../models/users.models";
+import exp = require("constants");
 
 // @ts-ignore
 const userPayload: UserPostT = {
@@ -12,6 +13,19 @@ const userPayload: UserPostT = {
     password: '12345678',
 };
 const userAccessRefreshTokens = {
+    access: '',
+    refresh: '',
+};
+
+
+let createdUser2: any = {};
+// @ts-ignore
+const user2Payload: UserPostT = {
+    login: 'test2',
+    email: 'test2@mail.ru',
+    password: '12345678',
+};
+const user2AccessRefreshTokens = {
     access: '',
     refresh: '',
 };
@@ -60,6 +74,26 @@ describe('/posts', () => {
            const cookies = result.headers['set-cookie'];
            userAccessRefreshTokens.refresh = cookies.find((i: string) => i.indexOf('refreshToken') >= 0);
            expect(userAccessRefreshTokens.refresh).toBeTruthy();
+
+           const cUser2 = await configForTests.reqWithAuthHeader('post', configForTests.urls.users, configForTests.basicToken)
+               .send(user2Payload)
+               .expect(HTTP_STATUSES.CREATED_201);
+
+           createdUser2 = cUser2.body;
+
+           const result2 = await request(app)
+               .post(configForTests.urls.auth.login)
+               .send({
+                   loginOrEmail: user2Payload.login,
+                   password: user2Payload.password
+               })
+               .expect(HTTP_STATUSES.OK_200);
+
+           user2AccessRefreshTokens.access = result2.body.accessToken;
+
+           const cookies2 = result2.headers['set-cookie'];
+           user2AccessRefreshTokens.refresh = cookies2.find((i: string) => i.indexOf('refreshToken') >= 0);
+           expect(user2AccessRefreshTokens.refresh).toBeTruthy();
        });
         test('Create blog should return 201', async () => {
             const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, `Bearer ${userAccessRefreshTokens.access}`)
@@ -83,6 +117,7 @@ describe('/posts', () => {
         test('Get all should return 200', async () => {
             const result = await request(app)
                 .get(configForTests.urls.posts.all)
+                .set('Cookie', userAccessRefreshTokens.refresh)
                 .expect(HTTP_STATUSES.OK_200);
 
             expect(result.body.items.length).toBe(0);
@@ -120,12 +155,14 @@ describe('/posts', () => {
             const result = await request(app)
                 // @ts-ignore
                 .get(`${configForTests.urls.posts.all}/42`)
+                .set('Cookie', userAccessRefreshTokens.refresh)
                 .expect(HTTP_STATUSES.NOT_FOUND_404);
         });
         test('Get by postId - should return 200', async () => {
             const result = await request(app)
                 // @ts-ignore
                 .get(`${configForTests.urls.posts.all}/${createdPost.id}`)
+                .set('Cookie', userAccessRefreshTokens.refresh)
                 .expect(HTTP_STATUSES.OK_200);
         });
     });
@@ -164,6 +201,7 @@ describe('/posts', () => {
             const result = await request(app)
                 // @ts-ignore
                 .get(`${configForTests.urls.posts.all}/${createdPost.id}`)
+                .set('Cookie', userAccessRefreshTokens.refresh)
                 .expect(HTTP_STATUSES.OK_200);
 
             expect(result.body.shortDescription).toBe('updated descr');
@@ -189,7 +227,114 @@ describe('/posts', () => {
             await request(app)
                 // @ts-ignore
                 .get(`${configForTests.urls.posts.all}/${createdPost.id}`)
+                .set('Cookie', userAccessRefreshTokens.refresh)
                 .expect(HTTP_STATUSES.NOT_FOUND_404);
+        });
+    });
+
+    describe('like & unlike posts', () => {
+        test('Create post should return 201', async () => {
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, `Bearer ${userAccessRefreshTokens.access}`)
+                .send({
+                    ...createPostPayload,
+                    // @ts-ignore
+                    blogId: createdBlog.id,
+                })
+                .expect(HTTP_STATUSES.CREATED_201);
+
+            createdPost = result.body;
+        });
+        test('like put - should return 401 not authorized', async () => {
+            await request(app)
+                // @ts-ignore
+                .put(`${configForTests.urls.posts.all}/${createdPost.id}/like-status`)
+                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
+        });
+        test('like put - should return 400 bad request', async () => {
+            // @ts-ignore
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}/like-status`, `Bearer ${userAccessRefreshTokens.access}`)
+                .send({})
+                .expect(HTTP_STATUSES.BAD_REQUEST_400);
+        });
+        test('like put - should return 404 post does not exist', async () => {
+            // @ts-ignore
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/42/like-status`, `Bearer ${userAccessRefreshTokens.access}`)
+                .send({
+                    likeStatus: Likes.LIKE
+                })
+                .expect(HTTP_STATUSES.NOT_FOUND_404);
+        });
+        test('like put - should return 204 post like success', async () => {
+            // @ts-ignore
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}/like-status`, `Bearer ${userAccessRefreshTokens.access}`)
+                .send({
+                    likeStatus: Likes.LIKE
+                })
+                .expect(HTTP_STATUSES.NO_CONTENT_204);
+        });
+
+        test('Get by postId - should return 200', async () => {
+            const result = await request(app)
+                // @ts-ignore
+                .get(`${configForTests.urls.posts.all}/${createdPost.id}`)
+                .set('Cookie', userAccessRefreshTokens.refresh)
+                .expect(HTTP_STATUSES.OK_200);
+
+            expect(result.body).toEqual({
+                "id": expect.any(String),
+                "title": expect.any(String),
+                "shortDescription": expect.any(String),
+                "content": expect.any(String),
+                "blogId": expect.any(String),
+                // "blogName": expect.any(String),
+                "createdAt": expect.any(String),
+                "extendedLikesInfo": {
+                    "likesCount": 1,
+                    "dislikesCount": 0,
+                    "myStatus": Likes.LIKE,
+                    "newestLikes": [
+                        {
+                            "addedAt": expect.any(String),
+                            "userId": expect.any(String),
+                            "login": userPayload.login,
+                        }
+                    ]
+                }
+            });
+        });
+        test('Get by postId another user - should return 200', async () => {
+            const result = await request(app)
+                // @ts-ignore
+                .get(`${configForTests.urls.posts.all}/${createdPost.id}`)
+                .set('Cookie', user2AccessRefreshTokens.refresh)
+                .expect(HTTP_STATUSES.OK_200);
+
+            expect(result.body.extendedLikesInfo.likesCount).toBe(1);
+            expect(result.body.extendedLikesInfo.dislikesCount).toBe(0);
+            expect(result.body.extendedLikesInfo.myStatus).toBe(Likes.NONE);
+            expect(result.body.extendedLikesInfo.newestLikes.length).toBe(1);
+        });
+
+        test('unlike put - should return 204 post like success', async () => {
+            // @ts-ignore
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}/like-status`, `Bearer ${userAccessRefreshTokens.access}`)
+                .send({
+                    likeStatus: Likes.DISLIKE
+                })
+                .expect(HTTP_STATUSES.NO_CONTENT_204);
+        });
+
+        test('Get by postId another user - should return 200', async () => {
+            const result = await request(app)
+                // @ts-ignore
+                .get(`${configForTests.urls.posts.all}/${createdPost.id}`)
+                .set('Cookie', user2AccessRefreshTokens.refresh)
+                .expect(HTTP_STATUSES.OK_200);
+
+            expect(result.body.extendedLikesInfo.likesCount).toBe(0);
+            expect(result.body.extendedLikesInfo.dislikesCount).toBe(1);
+            expect(result.body.extendedLikesInfo.myStatus).toBe(Likes.NONE);
+            expect(result.body.extendedLikesInfo.newestLikes.length).toBe(0);
         });
     });
 });
