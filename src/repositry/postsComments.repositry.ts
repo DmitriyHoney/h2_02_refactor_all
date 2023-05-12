@@ -11,7 +11,7 @@ export class PostsCommentsQueryRepo {
         this.PostComment = PostComment;
     }
     async find(
-        userId: string,
+        userId: string | undefined,
         params: BaseQueryT,
         filters: {}
     ) {
@@ -34,7 +34,7 @@ export class PostsCommentsQueryRepo {
         return baseRepositry.findByFields(this.PostComment, { 'confirmedInfo.code': code }, {});
     }
 
-    async findById(id: string, userId: string) {
+    async findById(id: string, userId: string | undefined) {
         if (!ObjectId.isValid(id)) return Promise.resolve(false);
         let row = await baseRepositry.findById(this.PostComment, id, {});
         if (!row) return false;
@@ -42,7 +42,7 @@ export class PostsCommentsQueryRepo {
     }
 }
 
-function commentMap(i: any, userId: string) {
+function commentMap(i: any, userId: string | undefined) {
     return {
         id: i.id,
         content: i.content,
@@ -55,7 +55,7 @@ function commentMap(i: any, userId: string) {
         likesInfo: {
             likesCount: i.likesInfo.likesCount,
             dislikesCount: i.likesInfo.dislikesCount,
-            myStatus: i.likesInfo?.usersStatistics[userId] ? i.likesInfo?.usersStatistics[userId] : Likes.NONE
+            myStatus: userId && i.likesInfo?.usersStatistics[userId] ? i.likesInfo?.usersStatistics[userId] : Likes.NONE
         }
     }
 }

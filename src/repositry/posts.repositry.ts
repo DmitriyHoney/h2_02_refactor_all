@@ -11,7 +11,7 @@ export class PostsQueryRepo {
         this.Post = Post;
     }
     async find(
-        userId: string,
+        userId: string | undefined,
         params: BaseQueryT,
         filters: {}
     ) {
@@ -23,7 +23,7 @@ export class PostsQueryRepo {
             items: result.items.map((i) => postMap(i, userId))
         }
     }
-    async findById(id: string, userId: string) {
+    async findById(id: string, userId: string | undefined) {
         if (!ObjectId.isValid(id)) return Promise.resolve(false);
         let row = await baseRepositry.findById(this.Post, id, {});
         if (!row) return false;
@@ -31,7 +31,7 @@ export class PostsQueryRepo {
     }
 }
 
-function postMap(i: any, userId: string) {
+function postMap(i: any, userId: string | undefined) {
     const userStatus =i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
     const newestLikes =i.extendedLikesInfo?.newestLikes
         .filter((i: any) => i.status === Likes.LIKE)
