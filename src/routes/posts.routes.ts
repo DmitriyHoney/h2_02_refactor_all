@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import container from '../composition/posts.composition';
 import { PostsControllers } from "../controllers/posts.controllers";
-import {authJwtAccessMiddleware, authJwtMiddleware} from "../middlewares/auth.middlewares";
+import {authJwtAccessMiddleware, authJwtMiddleware, basicAuthMiddleware} from "../middlewares/auth.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {createPostsBody, createPostsLikeBody} from "../middlewares/posts.middlewares";
 import {createPostsCommentsBody} from "../middlewares/postsComments.middlewares";
@@ -17,7 +17,7 @@ router.get(
 );
 router.post(
     '/',
-    authJwtAccessMiddleware,
+    basicAuthMiddleware,
     ...createPostsBody, validatorsErrorsMiddleware,
     postControllers.create.bind(postControllers)
 );
@@ -28,13 +28,13 @@ router.get(
 );
 router.put(
     '/:id',
-    authJwtAccessMiddleware,
+    basicAuthMiddleware,
     ...createPostsBody, validatorsErrorsMiddleware,
     postControllers.update.bind(postControllers)
 );
 router.delete(
     '/:id',
-    authJwtAccessMiddleware,
+    basicAuthMiddleware,
     postControllers.deleteOne.bind(postControllers)
 );
 router.get(
