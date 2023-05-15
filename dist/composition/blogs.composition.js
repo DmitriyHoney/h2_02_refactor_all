@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const inversify_1 = require("inversify");
+const blogs_controllers_1 = require("../controllers/blogs.controllers");
+const blogs_services_1 = require("../services/blogs.services");
+const blogs_repositry_1 = require("../repositry/blogs.repositry");
+const container = new inversify_1.Container();
+container.bind(blogs_controllers_1.BlogsControllers).to(blogs_controllers_1.BlogsControllers);
+container.bind(blogs_services_1.BlogsService).to(blogs_services_1.BlogsService);
+container.bind(blogs_repositry_1.BlogsQueryRepo).to(blogs_repositry_1.BlogsQueryRepo);
+container.bind(blogs_repositry_1.BlogsCommandRepo).to(blogs_repositry_1.BlogsCommandRepo);
+exports.default = container;
