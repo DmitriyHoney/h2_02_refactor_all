@@ -98,7 +98,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
     if (!refreshToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
 
     const verifiedToken = jwtService.verifyToken(refreshToken);
-    if (!verifiedToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
+    if (!verifiedToken) return next();
 
     if (!req.context) req.context = { user: null };
     // @ts-ignore
