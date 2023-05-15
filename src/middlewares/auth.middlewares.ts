@@ -85,6 +85,16 @@ export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunct
 
 export const authJwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken && req.headers?.authorization) {
+        const token = req.headers.authorization.split(' ')[1];
+        const verifiedToken = jwtService.verifyToken(token);
+        if (verifiedToken) {
+            if (!req.context) req.context = { user: null };
+            // @ts-ignore
+            req.context.user = await userService.usersQueryRepo.findById(verifiedToken.id);
+        }
+        return next();
+    }
     if (!refreshToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send();
 
     const verifiedToken = jwtService.verifyToken(refreshToken);
