@@ -39,9 +39,9 @@ export class PostsControllers {
         res: Response
     ) {
         try {
-            const blogId = await this.postsService.create(req.body);
-            const blog = await this.postsService.postsQueryRepo.findById(blogId, req?.context?.user?.id);
-            res.status(HTTP_STATUSES.CREATED_201).send(blog);
+            const postId = await this.postsService.create(req.body);
+            const post = await this.postsService.postsQueryRepo.findById(postId, req?.context?.user?.id);
+            res.status(HTTP_STATUSES.CREATED_201).send(post);
         } catch (e) {
             const error = (e as Error);
             return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(checkMongooseErrorsOnDuplicateKey(error));

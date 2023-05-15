@@ -30,6 +30,7 @@ export type PostInputT = {
     websiteUrl: string,
     isMembership?: boolean
     blogName?: string,
+    blogId?: string,
     extendedLikesInfo?: {
         likesCount?: number,
         dislikesCount?: number,
