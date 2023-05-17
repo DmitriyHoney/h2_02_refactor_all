@@ -32,16 +32,18 @@ export class PostsQueryRepo {
 }
 
 function postMap(i: any, userId: string | undefined) {
-    const userStatus =i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
-    const newestLikes =i.extendedLikesInfo?.newestLikes
-        .filter((i: any) => i.status === Likes.LIKE)
+    const userStatus = i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
+    const newestLikes = i.extendedLikesInfo?.newestLikes
+        // .filter((i: any) => i.status === Likes.LIKE)
         .map((i: any) => {
             return {
                 addedAt: i.addedAt,
                 userId: i.userId,
                 login: i.login,
             }
-        });
+        })
+        .reverse()
+        .slice(0, 3);
     return {
         id: i.id,
         title: i.content,

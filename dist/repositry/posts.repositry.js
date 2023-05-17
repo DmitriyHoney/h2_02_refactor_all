@@ -55,13 +55,13 @@ exports.PostsQueryRepo = PostsQueryRepo;
 function postMap(i, userId) {
     var _a, _b;
     const userStatus = (_a = i.extendedLikesInfo) === null || _a === void 0 ? void 0 : _a.newestLikes.find((u) => u.userId === userId);
-    const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.filter((i) => i.status === baseTypes_1.Likes.LIKE).map((i) => {
+    const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.map((i) => {
         return {
             addedAt: i.addedAt,
             userId: i.userId,
             login: i.login,
         };
-    });
+    }).reverse().slice(0, 3);
     return {
         id: i.id,
         title: i.content,
