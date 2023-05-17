@@ -55,7 +55,8 @@ exports.PostsQueryRepo = PostsQueryRepo;
 function postMap(i, userId) {
     var _a, _b;
     const userStatus = (_a = i.extendedLikesInfo) === null || _a === void 0 ? void 0 : _a.newestLikes.find((u) => u.userId === userId);
-    const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.map((i) => {
+    const myStatus = userStatus ? userStatus.status : baseTypes_1.Likes.NONE;
+    const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.filter((i) => i.status === baseTypes_1.Likes.LIKE).map((i) => {
         return {
             addedAt: i.addedAt,
             userId: i.userId,
@@ -73,7 +74,7 @@ function postMap(i, userId) {
         extendedLikesInfo: {
             likesCount: i.extendedLikesInfo.likesCount,
             dislikesCount: i.extendedLikesInfo.dislikesCount,
-            myStatus: userStatus ? userStatus.status : baseTypes_1.Likes.NONE,
+            myStatus: myStatus,
             newestLikes: newestLikes,
         }
     };
