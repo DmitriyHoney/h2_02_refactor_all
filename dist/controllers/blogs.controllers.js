@@ -26,9 +26,11 @@ const inversify_1 = require("inversify");
 const blogs_services_1 = require("../services/blogs.services");
 const baseTypes_1 = require("../config/baseTypes");
 const helpers_1 = require("../helpers");
+const posts_services_1 = require("../services/posts.services");
 let BlogsControllers = class BlogsControllers {
-    constructor(blogsService) {
+    constructor(blogsService, postsService) {
         this.blogsService = blogsService;
+        this.postsService = postsService;
     }
     getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -80,10 +82,34 @@ let BlogsControllers = class BlogsControllers {
             return res.status(baseTypes_1.HTTP_STATUSES.NO_CONTENT_204).send();
         });
     }
+    getPostsForBlog(req, res) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const blog = yield this.blogsService.blogsQueryRepo.findById(req.params.id);
+            if (!blog)
+                return res.status(baseTypes_1.HTTP_STATUSES.NOT_FOUND_404).send({});
+            const { pageSize, pageNumber, sortBy, sortDirection } = req.query;
+            const result = yield this.postsService.postsQueryRepo.find((_b = (_a = req === null || req === void 0 ? void 0 : req.context) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id, { pageSize, pageNumber, sortBy, sortDirection }, { blogId: req.params.id });
+            res.status(baseTypes_1.HTTP_STATUSES.OK_200).send(result);
+        });
+    }
+    createPostForBlog(req, res) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const blog = yield this.blogsService.blogsQueryRepo.findById(req.params.id);
+            if (!blog)
+                return res.status(baseTypes_1.HTTP_STATUSES.NOT_FOUND_404).send({});
+            const createdPostId = yield this.postsService.create(Object.assign(Object.assign({}, req.body), { blogId: req.params.id }));
+            const post = yield this.postsService.postsQueryRepo.findById(createdPostId, (_b = (_a = req === null || req === void 0 ? void 0 : req.context) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id);
+            return res.status(baseTypes_1.HTTP_STATUSES.CREATED_201).send(post);
+        });
+    }
 };
 BlogsControllers = __decorate([
     (0, inversify_1.injectable)(),
     __param(0, (0, inversify_1.inject)(blogs_services_1.BlogsService)),
-    __metadata("design:paramtypes", [blogs_services_1.BlogsService])
+    __param(1, (0, inversify_1.inject)(posts_services_1.PostsService)),
+    __metadata("design:paramtypes", [blogs_services_1.BlogsService,
+        posts_services_1.PostsService])
 ], BlogsControllers);
 exports.BlogsControllers = BlogsControllers;

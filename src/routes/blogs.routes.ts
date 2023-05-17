@@ -4,6 +4,7 @@ import { BlogsControllers } from "../controllers/blogs.controllers";
 import {authJwtAccessMiddleware, basicAuthMiddleware} from "../middlewares/auth.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {createAndUpdateBlogsBody} from "../middlewares/blogs.middlewares";
+import { createPostFromBlogUrlBody } from "../middlewares/posts.middlewares";
 
 const blogControllers = container.resolve(BlogsControllers);
 
@@ -27,5 +28,16 @@ router.delete(
     '/:id',
     basicAuthMiddleware,
     blogControllers.deleteOne.bind(blogControllers)
+);
+router.get(
+    '/:id/posts',
+    basicAuthMiddleware,
+    blogControllers.getPostsForBlog.bind(blogControllers)
+);
+router.post(
+    '/:id/posts',
+    basicAuthMiddleware,
+    ...createPostFromBlogUrlBody, validatorsErrorsMiddleware,
+    blogControllers.createPostForBlog.bind(blogControllers)
 );
 export default router;
