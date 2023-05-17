@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import container from '../composition/blogs.composition';
 import { BlogsControllers } from "../controllers/blogs.controllers";
-import {authJwtAccessMiddleware, basicAuthMiddleware} from "../middlewares/auth.middlewares";
+import {authJwtAccessMiddleware, authJwtMiddleware, basicAuthMiddleware} from "../middlewares/auth.middlewares";
 import {validatorsErrorsMiddleware} from "../middlewares";
 import {createAndUpdateBlogsBody} from "../middlewares/blogs.middlewares";
 import { createPostFromBlogUrlBody } from "../middlewares/posts.middlewares";
@@ -31,7 +31,7 @@ router.delete(
 );
 router.get(
     '/:id/posts',
-    basicAuthMiddleware,
+    authJwtMiddleware,
     blogControllers.getPostsForBlog.bind(blogControllers)
 );
 router.post(

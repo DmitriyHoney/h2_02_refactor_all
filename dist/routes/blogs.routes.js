@@ -17,6 +17,6 @@ router.post('/', auth_middlewares_1.basicAuthMiddleware, ...blogs_middlewares_1.
 router.get('/:id', blogControllers.getOne.bind(blogControllers));
 router.put('/:id', auth_middlewares_1.basicAuthMiddleware, ...blogs_middlewares_1.createAndUpdateBlogsBody, middlewares_1.validatorsErrorsMiddleware, blogControllers.update.bind(blogControllers));
 router.delete('/:id', auth_middlewares_1.basicAuthMiddleware, blogControllers.deleteOne.bind(blogControllers));
-router.get('/:id/posts', auth_middlewares_1.basicAuthMiddleware, blogControllers.getPostsForBlog.bind(blogControllers));
+router.get('/:id/posts', auth_middlewares_1.authJwtMiddleware, blogControllers.getPostsForBlog.bind(blogControllers));
 router.post('/:id/posts', auth_middlewares_1.basicAuthMiddleware, ...posts_middlewares_1.createPostFromBlogUrlBody, middlewares_1.validatorsErrorsMiddleware, blogControllers.createPostForBlog.bind(blogControllers));
 exports.default = router;
