@@ -109,7 +109,7 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         return next();
     }
     if (!refreshToken)
-        return next();
+        return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     const verifiedToken = jwt_manager_1.jwtService.verifyToken(refreshToken);
     if (!verifiedToken)
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
