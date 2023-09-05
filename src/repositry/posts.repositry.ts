@@ -47,7 +47,7 @@ function postMap(i: any, userId: string | undefined, excludeMeta = true) {
             return result;
         })
         .slice(0, 3).sort(function(a: any, b: any) {
-            return (a.addedAt < b.addedAt) ? -1 : ((a.addedAt > b.addedAt) ? 1 : 0);
+            return (a.addedAt > b.addedAt) ? -1 : ((a.addedAt < b.addedAt) ? 1 : 0);
         });
 
     return {
