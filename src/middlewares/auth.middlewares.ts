@@ -95,6 +95,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
             if (!req.context) req.context = { user: null };
             // @ts-ignore
             req.context.user = await userService.usersQueryRepo.findById(verifiedToken?.id);
+            console.log(2222, req.context.user);
         }
         return next();
     }
@@ -108,6 +109,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
     if (!req.context) req.context = { user: null };
     // @ts-ignore
     req.context.user = await userService.usersQueryRepo.findById(verifiedToken.id);
+    console.log(2222, req.context.user);
     next();
 };
 

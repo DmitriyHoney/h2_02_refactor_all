@@ -106,6 +106,7 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                 req.context = { user: null };
             // @ts-ignore
             req.context.user = yield userService.usersQueryRepo.findById(verifiedToken === null || verifiedToken === void 0 ? void 0 : verifiedToken.id);
+            console.log(2222, req.context.user);
         }
         return next();
     }
@@ -119,6 +120,7 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         req.context = { user: null };
     // @ts-ignore
     req.context.user = yield userService.usersQueryRepo.findById(verifiedToken.id);
+    console.log(2222, req.context.user);
     next();
 });
 exports.authJwtMiddleware = authJwtMiddleware;
