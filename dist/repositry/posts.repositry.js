@@ -66,7 +66,7 @@ function postMap(i, userId, excludeMeta = true) {
         if (excludeMeta)
             delete result.status;
         return result;
-    }).slice(0, 3);
+    }).reverse().slice(0, 3);
     return {
         id: i.id,
         title: i.content,

@@ -46,6 +46,7 @@ function postMap(i: any, userId: string | undefined, excludeMeta = true) {
             if (excludeMeta) delete result.status;
             return result;
         })
+        .reverse()
         .slice(0, 3);
 
     return {
