@@ -110,6 +110,7 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     }
     if (!refreshToken)
         return next();
+    console.log('refreshToken', refreshToken);
     const verifiedToken = jwt_manager_1.jwtService.verifyToken(refreshToken);
     console.log('verifiedToken', verifiedToken);
     if (!verifiedToken)

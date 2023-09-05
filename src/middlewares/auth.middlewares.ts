@@ -98,6 +98,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
     }
     if (!refreshToken) return next();
 
+    console.log('refreshToken', refreshToken);
     const verifiedToken = jwtService.verifyToken(refreshToken);
     console.log('verifiedToken', verifiedToken);
     
