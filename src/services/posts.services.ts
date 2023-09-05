@@ -36,10 +36,14 @@ export class PostsService {
     async likeUnlikePost(id: string, likeStatus: string, post: any, user: any) {
         const likesInfo = post.extendedLikesInfo;
         const oldStatus = likesInfo.myStatus;
+        const newStatus = likeStatus;
+        
+        if (oldStatus === newStatus) return Promise.resolve();
+
         if (oldStatus === Likes.LIKE) likesInfo.likesCount--;
         else if (oldStatus === Likes.DISLIKE) likesInfo.dislikesCount--;
 
-        const newStatus = likeStatus;
+        
         if (newStatus === Likes.LIKE) likesInfo.likesCount++;
         else if (newStatus === Likes.DISLIKE) likesInfo.dislikesCount++;
 

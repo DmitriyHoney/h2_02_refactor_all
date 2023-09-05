@@ -33,11 +33,10 @@ let PostsControllers = class PostsControllers {
         this.postsCommentsService = postsCommentsService;
     }
     getAll(req, res) {
-        var _a, _b, _c, _d;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const { pageSize, pageNumber, sortBy, sortDirection } = req.query;
             const result = yield this.postsService.postsQueryRepo.find((_b = (_a = req === null || req === void 0 ? void 0 : req.context) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id, { pageSize, pageNumber, sortBy, sortDirection }, {});
-            console.log((_d = (_c = req === null || req === void 0 ? void 0 : req.context) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.id);
             res.status(baseTypes_1.HTTP_STATUSES.OK_200).send(result);
         });
     }

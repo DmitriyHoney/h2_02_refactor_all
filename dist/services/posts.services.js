@@ -63,11 +63,13 @@ let PostsService = class PostsService {
         return __awaiter(this, void 0, void 0, function* () {
             const likesInfo = post.extendedLikesInfo;
             const oldStatus = likesInfo.myStatus;
+            const newStatus = likeStatus;
+            if (oldStatus === newStatus)
+                return Promise.resolve();
             if (oldStatus === baseTypes_1.Likes.LIKE)
                 likesInfo.likesCount--;
             else if (oldStatus === baseTypes_1.Likes.DISLIKE)
                 likesInfo.dislikesCount--;
-            const newStatus = likeStatus;
             if (newStatus === baseTypes_1.Likes.LIKE)
                 likesInfo.likesCount++;
             else if (newStatus === baseTypes_1.Likes.DISLIKE)

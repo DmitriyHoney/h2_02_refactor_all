@@ -23,7 +23,6 @@ export class PostsControllers {
             { pageSize, pageNumber, sortBy, sortDirection },
             {}
         );
-        console.log(req?.context?.user?.id);
         res.status(HTTP_STATUSES.OK_200).send(result);
     }
 

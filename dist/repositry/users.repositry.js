@@ -83,7 +83,6 @@ let UsersCommandRepo = class UsersCommandRepo {
     }
     update(id, userPayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(id);
             if (!mongodb_1.ObjectId.isValid(id))
                 return Promise.resolve(null);
             const createdRow = yield this.User.findByIdAndUpdate({ _id: id }, userPayload);

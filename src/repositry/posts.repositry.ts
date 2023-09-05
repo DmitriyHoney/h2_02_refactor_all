@@ -33,7 +33,6 @@ export class PostsQueryRepo {
 
 function postMap(i: any, userId: string | undefined) {
     const userStatus = i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
-    console.log(111, userId);
     const myStatus = userStatus ? userStatus.status : Likes.NONE;
     const newestLikes = i.extendedLikesInfo?.newestLikes
         .filter((i: any) => i.status === Likes.LIKE) // && i.userId !== userId
@@ -45,6 +44,7 @@ function postMap(i: any, userId: string | undefined) {
             }
         })
         .slice(0, 3);
+
     return {
         id: i.id,
         title: i.content,
