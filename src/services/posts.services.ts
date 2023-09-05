@@ -42,7 +42,6 @@ export class PostsService {
 
         if (oldStatus === Likes.LIKE) likesInfo.likesCount--;
         else if (oldStatus === Likes.DISLIKE) likesInfo.dislikesCount--;
-
         
         if (newStatus === Likes.LIKE) likesInfo.likesCount++;
         else if (newStatus === Likes.DISLIKE) likesInfo.dislikesCount++;

@@ -35,7 +35,7 @@ function postMap(i: any, userId: string | undefined, excludeMeta = true) {
     const userStatus = i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
     const myStatus = userStatus ? userStatus.status : Likes.NONE;
     const newestLikes = i.extendedLikesInfo?.newestLikes
-        .filter((i: any) => i.status === Likes.LIKE) // && i.userId !== userId
+        .filter((i: any) => excludeMeta ? i.status === Likes.LIKE : i) // && i.userId !== userId
         .map((i: any) => {
             const result = {
                 addedAt: i.addedAt,
