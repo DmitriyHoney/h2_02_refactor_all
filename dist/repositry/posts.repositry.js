@@ -56,11 +56,7 @@ function postMap(i, userId) {
     var _a, _b;
     const userStatus = (_a = i.extendedLikesInfo) === null || _a === void 0 ? void 0 : _a.newestLikes.find((u) => u.userId === userId);
     const myStatus = userStatus ? userStatus.status : baseTypes_1.Likes.NONE;
-    if (myStatus === baseTypes_1.Likes.NONE) {
-        console.log('userId', userId);
-        console.log('userStatus', userStatus);
-    }
-    const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.filter((i) => i.status === baseTypes_1.Likes.LIKE && i.userId !== userId).map((i) => {
+    const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.filter((i) => i.status === baseTypes_1.Likes.LIKE).map((i) => {
         return {
             addedAt: i.addedAt,
             userId: i.userId,

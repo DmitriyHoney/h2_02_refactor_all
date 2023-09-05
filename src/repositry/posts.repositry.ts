@@ -34,12 +34,8 @@ export class PostsQueryRepo {
 function postMap(i: any, userId: string | undefined) {
     const userStatus = i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId);
     const myStatus = userStatus ? userStatus.status : Likes.NONE;
-    if (myStatus === Likes.NONE) {
-        console.log('userId', userId);
-        console.log('userStatus', userStatus);
-    }
     const newestLikes = i.extendedLikesInfo?.newestLikes
-        .filter((i: any) => i.status === Likes.LIKE && i.userId !== userId)
+        .filter((i: any) => i.status === Likes.LIKE) // && i.userId !== userId
         .map((i: any) => {
             return {
                 addedAt: i.addedAt,
