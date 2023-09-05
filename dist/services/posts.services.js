@@ -80,10 +80,10 @@ let PostsService = class PostsService {
                     addedAt: new Date().toISOString(),
                     userId: user.id,
                     login: user.login,
-                    myStatus: newStatus
+                    status: newStatus
                 });
             }
-            delete likesInfo.myStatus;
+            // delete likesInfo.myStatus;
             return yield this.update(id, Object.assign(Object.assign({}, post), { likesInfo }));
         });
     }

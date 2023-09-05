@@ -50,10 +50,10 @@ export class PostsService {
                 addedAt: new Date().toISOString(),
                 userId: user.id,
                 login: user.login,
-                myStatus: newStatus
+                status: newStatus
             });
         }
-        delete likesInfo.myStatus;
+        // delete likesInfo.myStatus;
         return await this.update(id, { ...post, likesInfo });
     }
 }
