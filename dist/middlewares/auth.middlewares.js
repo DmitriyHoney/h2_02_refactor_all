@@ -95,9 +95,10 @@ const basicAuthMiddleware = (req, res, next) => {
 };
 exports.basicAuthMiddleware = basicAuthMiddleware;
 const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _a, _b, _c;
     const refreshToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
-    if (!refreshToken && ((_b = req.headers) === null || _b === void 0 ? void 0 : _b.authorization)) {
+    console.log(1111, refreshToken, (_b = req.headers) === null || _b === void 0 ? void 0 : _b.authorization);
+    if (!refreshToken && ((_c = req.headers) === null || _c === void 0 ? void 0 : _c.authorization)) {
         const token = req.headers.authorization.split(' ')[1];
         const verifiedToken = jwt_manager_1.jwtService.verifyToken(token);
         if (verifiedToken) {
@@ -109,8 +110,9 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         return next();
     }
     if (!refreshToken)
-        return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
+        return next();
     const verifiedToken = jwt_manager_1.jwtService.verifyToken(refreshToken);
+    console.log(222, verifiedToken);
     if (!verifiedToken)
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     if (!req.context)
@@ -121,9 +123,9 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
 });
 exports.authJwtMiddleware = authJwtMiddleware;
 const authJwtAccessMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _d, _e;
     if (!req.headers.authorization) {
-        if ((_c = req === null || req === void 0 ? void 0 : req.context) === null || _c === void 0 ? void 0 : _c.user)
+        if ((_d = req === null || req === void 0 ? void 0 : req.context) === null || _d === void 0 ? void 0 : _d.user)
             req.context.user = null;
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send();
     }
@@ -142,7 +144,7 @@ const authJwtAccessMiddleware = (req, res, next) => __awaiter(void 0, void 0, vo
         next();
     }
     else {
-        if ((_d = req === null || req === void 0 ? void 0 : req.context) === null || _d === void 0 ? void 0 : _d.user)
+        if ((_e = req === null || req === void 0 ? void 0 : req.context) === null || _e === void 0 ? void 0 : _e.user)
             req.context.user = null;
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send();
     }
