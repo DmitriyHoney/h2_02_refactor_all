@@ -48,7 +48,7 @@ export class PostsService {
         else if (newStatus === Likes.DISLIKE) likesInfo.dislikesCount++;
 
         if (!likesInfo.newestLikes) likesInfo.newestLikes = [];
-        likesInfo.newestLikes = likesInfo.newestLikes; // filter((i: any) => i.userId !== user.id)
+        likesInfo.newestLikes = likesInfo.newestLikes.filter((i: any) => i.userId !== user.id)
         if (newStatus !== Likes.NONE) {
             likesInfo.newestLikes.push({
                 addedAt: new Date().toISOString(),
