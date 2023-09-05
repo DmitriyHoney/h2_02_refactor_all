@@ -104,7 +104,7 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             if (!req.context)
                 req.context = { user: null };
             // @ts-ignore
-            req.context.user = yield userService.usersQueryRepo.findById(verifiedToken.id);
+            req.context.user = yield userService.usersQueryRepo.findById(verifiedToken === null || verifiedToken === void 0 ? void 0 : verifiedToken.id);
         }
         return next();
     }
@@ -112,7 +112,7 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         return next();
     const verifiedToken = jwt_manager_1.jwtService.verifyToken(refreshToken);
     if (!verifiedToken)
-        return next();
+        return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     if (!req.context)
         req.context = { user: null };
     // @ts-ignore

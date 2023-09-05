@@ -92,7 +92,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
         if (verifiedToken) {
             if (!req.context) req.context = { user: null };
             // @ts-ignore
-            req.context.user = await userService.usersQueryRepo.findById(verifiedToken.id);
+            req.context.user = await userService.usersQueryRepo.findById(verifiedToken?.id);
         }
         return next();
     }
@@ -100,7 +100,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
 
     const verifiedToken = jwtService.verifyToken(refreshToken);
     
-    if (!verifiedToken) return next();
+    if (!verifiedToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
 
     if (!req.context) req.context = { user: null };
     // @ts-ignore

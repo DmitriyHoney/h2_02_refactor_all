@@ -5,6 +5,7 @@ import { BaseGetQueryParams, HTTP_STATUSES } from "../config/baseTypes";
 import {checkMongooseErrorsOnDuplicateKey} from "../helpers";
 import {PostInputT} from '../models/posts.models';
 import {PostsCommentsService} from "../services/postsComments.services";
+import { log } from "node:console";
 
 @injectable()
 export class PostsControllers {
@@ -22,6 +23,7 @@ export class PostsControllers {
             { pageSize, pageNumber, sortBy, sortDirection },
             {}
         );
+        console.log(req?.context?.user?.id);
         res.status(HTTP_STATUSES.OK_200).send(result);
     }
 

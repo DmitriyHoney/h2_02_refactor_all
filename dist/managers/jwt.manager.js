@@ -15,6 +15,7 @@ exports.jwtService = {
             return jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
         }
         catch (e) {
+            console.error(e);
             return null;
         }
     },

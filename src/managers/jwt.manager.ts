@@ -9,6 +9,7 @@ export const jwtService = {
         try {
             return jwt.verify(token, settings.JWT_SECRET);
         } catch (e) {
+            console.error(e);
             return null;
         }
     },
