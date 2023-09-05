@@ -99,6 +99,8 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
     if (!refreshToken) return next();
 
     const verifiedToken = jwtService.verifyToken(refreshToken);
+    console.log('verifiedToken', verifiedToken);
+    
     
     if (!verifiedToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
 
