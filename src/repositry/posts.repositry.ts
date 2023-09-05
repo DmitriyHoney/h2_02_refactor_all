@@ -43,7 +43,8 @@ function postMap(i: any, userId: string | undefined) {
                 login: i.login,
             }
         })
-        .slice(0, 3);
+        .slice(0, 3)
+        .reverse();
 
     return {
         id: i.id,

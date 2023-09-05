@@ -62,7 +62,7 @@ function postMap(i, userId) {
             userId: i.userId,
             login: i.login,
         };
-    }).slice(0, 3);
+    }).slice(0, 3).reverse();
     return {
         id: i.id,
         title: i.content,
