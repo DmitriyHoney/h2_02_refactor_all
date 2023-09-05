@@ -106,10 +106,8 @@ export class AuthService {
     }
     async refreshToken(userId: string, userIp: string, userAgent: string) {
         // @ts-ignore
-        const user = this.usersService.usersQueryRepo.findById(userId);
+        const user = await this.usersService.usersQueryRepo.findById(userId);
         if (!user) return errorGenerator.notAuthorized('refreshToken expired or incorrect', 'refreshToken');
-
-
         const accessToken = jwtService.createJWT({
             // @ts-ignore
             id: user.id, login: user.login, email: user.email

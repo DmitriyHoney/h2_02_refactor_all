@@ -85,6 +85,7 @@ export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunct
 
 export const authJwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies?.refreshToken;
+    
     if (!refreshToken && req.headers?.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const verifiedToken = jwtService.verifyToken(token);
@@ -98,6 +99,7 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
     if (!refreshToken) return next();
 
     const verifiedToken = jwtService.verifyToken(refreshToken);
+    
     if (!verifiedToken) return next();
 
     if (!req.context) req.context = { user: null };

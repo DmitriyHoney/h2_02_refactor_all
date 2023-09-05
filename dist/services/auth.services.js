@@ -141,7 +141,7 @@ let AuthService = class AuthService {
     refreshToken(userId, userIp, userAgent) {
         return __awaiter(this, void 0, void 0, function* () {
             // @ts-ignore
-            const user = this.usersService.usersQueryRepo.findById(userId);
+            const user = yield this.usersService.usersQueryRepo.findById(userId);
             if (!user)
                 return helpers_1.errorGenerator.notAuthorized('refreshToken expired or incorrect', 'refreshToken');
             const accessToken = jwt_manager_1.jwtService.createJWT({

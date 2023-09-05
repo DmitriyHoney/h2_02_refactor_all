@@ -5,7 +5,6 @@ import { configForTests } from './baseConfig';
 import app from "../app";
 import {UserPostT} from "../models/users.models";
 import {jwtService} from "../managers/jwt.manager";
-import exp = require("constants");
 
 // @ts-ignore
 const userPayload: UserPostT = {
@@ -438,7 +437,6 @@ describe('/auth', () => {
         });
         test('/me - Should return 200 and user info', async () => {
             const result = await configForTests.reqWithAuthHeader('get', configForTests.urls.auth.me, `Bearer ${accessToken}`)
-                .get(configForTests.urls.auth.me)
                 .expect(HTTP_STATUSES.OK_200);
 
             expect(result.body).toEqual({

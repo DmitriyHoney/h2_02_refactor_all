@@ -102,7 +102,7 @@ describe('/posts', () => {
             expect(user2AccessRefreshTokens.refresh).toBeTruthy();
         });
         test('Create blog should return 201', async () => {
-            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, `Bearer ${userAccessRefreshTokens.access}`)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, configForTests.basicToken)
                 .send(createBlogPayload)
                 .expect(HTTP_STATUSES.CREATED_201);
 
@@ -132,7 +132,7 @@ describe('/posts', () => {
 
     describe('/:postId - create post', () => {
         test('Create post should return 201', async () => {
-            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, `Bearer ${userAccessRefreshTokens.access}`)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, configForTests.basicToken)
                 .send({
                     ...createPostPayload,
                     // @ts-ignore
@@ -145,12 +145,12 @@ describe('/posts', () => {
     });
 
     describe('/posts/{postId}.comments - get comments by postId', () => {
-        test('Refresh token not send - 401 not authorized', async () => {
+        test('Refresh token not send - 200', async () => {
             // @ts-ignore
             const url = `${configForTests.urls.posts.all}/${createdPost.id}/comments`;
             await request(app)
                 .get(url)
-                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401)
+                .expect(HTTP_STATUSES.OK_200)
         });
         test('Post does not exist - 404', async () => {
             await request(app)
@@ -215,11 +215,11 @@ describe('/posts', () => {
     });
 
     describe('get update delete by id', () => {
-        test('get must return 401 not refresh token', async () => {
+        test('get must return 200', async () => {
             await request(app)
                 // @ts-ignore
                 .get(`${configForTests.urls.comments.all}/${createdComment.id}`)
-                .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
+                .expect(HTTP_STATUSES.OK_200);
         });
         test('get must return 404 not found', async () => {
             await request(app)

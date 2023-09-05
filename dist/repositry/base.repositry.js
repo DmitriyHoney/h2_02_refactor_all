@@ -98,7 +98,7 @@ exports.baseRepositry = {
                 if (!['asc', 'desc'].includes(queryParams.sortDirection))
                     queryParams.sortDirection = 'asc';
                 Object.values(filters)
-                    .filter((arr) => arr.length > 0)
+                    .filter((arr) => arr && arr.length > 0)
                     .length ? payload.unshift({ '$match': filters }) : null;
                 payload.unshift({ '$sort': { [queryParams.sortBy]: queryParams.sortDirection === 'asc' ? 1 : -1 } });
                 const items = yield model.aggregate(payload);

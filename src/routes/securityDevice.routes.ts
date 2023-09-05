@@ -10,17 +10,14 @@ const router = Router();
 
 router.get(
     '/',
-    authJwtMiddleware,
     securityDeviceControllers.getAllUserDevices.bind(securityDeviceControllers)
 );
 router.delete(
     '/',
-    authJwtMiddleware,
     securityDeviceControllers.deleteAllUserDecices.bind(securityDeviceControllers)
 );
 router.delete(
     '/:deviceId',
-    authJwtMiddleware,
     securityDeviceControllers.deleteUserDeviceById.bind(securityDeviceControllers)
 );
 

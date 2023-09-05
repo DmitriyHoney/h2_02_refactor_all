@@ -73,12 +73,12 @@ describe('/blogs', () => {
                 .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
         });
         test('Create blog should return 400 bad request', async () => {
-            await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, configForTests.basicToken)
                 .send({})
                 .expect(HTTP_STATUSES.BAD_REQUEST_400);
         });
         test('Create blog should return 201', async () => {
-            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, `Bearer ${userAccessRefreshTokens.access}`)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, configForTests.basicToken)
                 .send(createBlogPayload)
                 .expect(HTTP_STATUSES.CREATED_201);
 
@@ -131,12 +131,12 @@ describe('/blogs', () => {
         });
         test('Update blog should return 400 bad request', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.blogs.all}/${createdBlog.id}`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.blogs.all}/${createdBlog.id}`, configForTests.basicToken)
                 .send({})
                 .expect(HTTP_STATUSES.BAD_REQUEST_400);
         });
         test('Update blog should return 404 blog not exist', async () => {
-            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.blogs.all}/42`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.blogs.all}/42`, configForTests.basicToken)
                 .send({
                     ...createBlogPayload,
                     description: 'updated descr',
@@ -145,7 +145,7 @@ describe('/blogs', () => {
         });
         test('Update blog should return 204', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.blogs.all}/${createdBlog.id}`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.blogs.all}/${createdBlog.id}`, configForTests.basicToken)
                 .send({
                     ...createBlogPayload,
                     description: 'updated descr',
@@ -177,12 +177,12 @@ describe('/blogs', () => {
                 .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
         });
         test('Delete blog should return 404 blog not exist', async () => {
-            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.blogs.all}/42`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.blogs.all}/42`, configForTests.basicToken)
                 .expect(HTTP_STATUSES.NOT_FOUND_404);
         });
         test('Delete blog should return 204', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.blogs.all}/${createdBlog.id}`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.blogs.all}/${createdBlog.id}`, configForTests.basicToken)
                 .expect(HTTP_STATUSES.NO_CONTENT_204);
 
             await request(app)

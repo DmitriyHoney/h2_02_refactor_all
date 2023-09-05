@@ -4,6 +4,7 @@ import { HTTP_STATUSES } from "../config/baseTypes";
 import {AuthService} from "../services/auth.services";
 import {UserPostT} from "../models/users.models";
 import {checkMongooseErrorsOnDuplicateKey, getUserIp} from "../helpers";
+import { log } from "node:console";
 
 @injectable()
 export class AuthControllers {

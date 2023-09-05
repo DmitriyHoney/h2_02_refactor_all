@@ -4,7 +4,6 @@ import {HTTP_STATUSES, Likes, VALIDATION_ERROR_MSG, ValidationErrors} from '../c
 import { configForTests } from './baseConfig';
 import app from "../app";
 import {UserPostT} from "../models/users.models";
-import exp = require("constants");
 
 // @ts-ignore
 const userPayload: UserPostT = {
@@ -96,7 +95,7 @@ describe('/posts', () => {
            expect(user2AccessRefreshTokens.refresh).toBeTruthy();
        });
         test('Create blog should return 201', async () => {
-            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, `Bearer ${userAccessRefreshTokens.access}`)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.blogs.all, configForTests.basicToken)
                 .send(createBlogPayload)
                 .expect(HTTP_STATUSES.CREATED_201);
 
@@ -132,12 +131,12 @@ describe('/posts', () => {
                 .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
         });
         test('Create post should return 400 bad request', async () => {
-            await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, configForTests.basicToken)
                 .send({})
                 .expect(HTTP_STATUSES.BAD_REQUEST_400);
         });
         test('Create post should return 201', async () => {
-            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, `Bearer ${userAccessRefreshTokens.access}`)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, configForTests.basicToken)
                 .send({
                     ...createPostPayload,
                     // @ts-ignore
@@ -177,12 +176,12 @@ describe('/posts', () => {
         });
         test('Update post should return 400 bad request', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}`, configForTests.basicToken)
                 .send({})
                 .expect(HTTP_STATUSES.BAD_REQUEST_400);
         });
         test('Update post should return 404 blog not exist', async () => {
-            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/42`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/42`, configForTests.basicToken)
                 .send({
                     ...createdPost,
                     shortDescription: 'updated descr',
@@ -191,7 +190,7 @@ describe('/posts', () => {
         });
         test('Update post should return 204', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('put', `${configForTests.urls.posts.all}/${createdPost.id}`, configForTests.basicToken)
                 .send({
                     ...createdPost,
                     shortDescription: 'updated descr',
@@ -216,12 +215,12 @@ describe('/posts', () => {
                 .expect(HTTP_STATUSES.NOT_AUTHORIZED_401);
         });
         test('Delete post should return 404 post not exist', async () => {
-            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.posts.all}/42`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.posts.all}/42`, configForTests.basicToken)
                 .expect(HTTP_STATUSES.NOT_FOUND_404);
         });
         test('Delete post should return 204', async () => {
             // @ts-ignore
-            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.posts.all}/${createdPost.id}`, `Bearer ${userAccessRefreshTokens.access}`)
+            await configForTests.reqWithAuthHeader('delete', `${configForTests.urls.posts.all}/${createdPost.id}`, configForTests.basicToken)
                 .expect(HTTP_STATUSES.NO_CONTENT_204);
 
             await request(app)
@@ -234,7 +233,7 @@ describe('/posts', () => {
 
     describe('like & unlike posts', () => {
         test('Create post should return 201', async () => {
-            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, `Bearer ${userAccessRefreshTokens.access}`)
+            const result = await configForTests.reqWithAuthHeader('post', configForTests.urls.posts.all, configForTests.basicToken)
                 .send({
                     ...createPostPayload,
                     // @ts-ignore
@@ -286,19 +285,13 @@ describe('/posts', () => {
                 "shortDescription": expect.any(String),
                 "content": expect.any(String),
                 "blogId": expect.any(String),
-                // "blogName": expect.any(String),
+                "blogName": expect.any(String),
                 "createdAt": expect.any(String),
                 "extendedLikesInfo": {
                     "likesCount": 1,
                     "dislikesCount": 0,
                     "myStatus": Likes.LIKE,
-                    "newestLikes": [
-                        {
-                            "addedAt": expect.any(String),
-                            "userId": expect.any(String),
-                            "login": userPayload.login,
-                        }
-                    ]
+                    "newestLikes": [], // myStatus must not show
                 }
             });
         });
