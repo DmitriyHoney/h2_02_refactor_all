@@ -7,8 +7,6 @@ export const jwtService = {
     },
     verifyToken(token: string) {
         try {
-            console.log(111, token);
-            
             return jwt.verify(token, settings.JWT_SECRET);
         } catch (e) {
             console.error(e);

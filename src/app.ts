@@ -21,6 +21,15 @@ app.use(cors());
 app.use(cookies());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+var num = 0;
+app.use(function (req, res, next) {
+    var method = req.method;
+    var url = req.url;
+
+    console.log((++num) + " " + method + " " + url);
+    next();
+});
+
 app.set('trust proxy', true);
 
 app.use('/api/users', usersRoute);

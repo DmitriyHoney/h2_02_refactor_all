@@ -23,6 +23,13 @@ app.use((0, cors_1.default)());
 app.use((0, cookie_parser_1.default)());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
+var num = 0;
+app.use(function (req, res, next) {
+    var method = req.method;
+    var url = req.url;
+    console.log((++num) + " " + method + " " + url);
+    next();
+});
 app.set('trust proxy', true);
 app.use('/api/users', users_routes_1.default);
 app.use('/api/auth', auth_routes_1.default);
