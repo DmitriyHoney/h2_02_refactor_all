@@ -74,13 +74,13 @@ let PostsService = class PostsService {
                 likesInfo.dislikesCount++;
             if (!likesInfo.newestLikes)
                 likesInfo.newestLikes = [];
-            likesInfo.newestLikes = likesInfo.newestLikes.filter((i) => i.userId !== user.id);
+            likesInfo.newestLikes = likesInfo.newestLikes; // filter((i: any) => i.userId !== user.id)
             if (newStatus !== baseTypes_1.Likes.NONE) {
                 likesInfo.newestLikes.push({
                     addedAt: new Date().toISOString(),
                     userId: user.id,
                     login: user.login,
-                    status: newStatus
+                    myStatus: newStatus
                 });
             }
             delete likesInfo.myStatus;
