@@ -66,7 +66,9 @@ function postMap(i, userId, excludeMeta = true) {
         if (excludeMeta)
             delete result.status;
         return result;
-    }).slice(0, 3);
+    }).slice(0, 3).sort(function (a, b) {
+        return (a.addedAt < b.addedAt) ? -1 : ((a.addedAt > b.addedAt) ? 1 : 0);
+    });
     return {
         id: i.id,
         title: i.content,
