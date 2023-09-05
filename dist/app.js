@@ -25,9 +25,10 @@ app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 var num = 0;
 app.use(function (req, res, next) {
+    var _a;
     var method = req.method;
     var url = req.url;
-    console.log((++num) + " " + method + " " + url);
+    console.log((++num) + " " + method + " " + url + "    user: " + ((_a = req === null || req === void 0 ? void 0 : req.context) === null || _a === void 0 ? void 0 : _a.user));
     next();
 });
 app.set('trust proxy', true);

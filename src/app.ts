@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
     var method = req.method;
     var url = req.url;
 
-    console.log((++num) + " " + method + " " + url);
+    console.log((++num) + " " + method + " " + url + "    user: " + req?.context?.user);
     next();
 });
 
