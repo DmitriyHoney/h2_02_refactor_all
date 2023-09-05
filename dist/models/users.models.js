@@ -66,3 +66,4 @@ exports.userSchema.pre('save', function (next) {
     });
 });
 exports.User = mongoose_1.default.model('User', exports.userSchema);
+//# sourceMappingURL=users.models.js.map

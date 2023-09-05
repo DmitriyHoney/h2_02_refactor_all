@@ -10,3 +10,4 @@ securityDeviceContainer.bind(securityDevice_services_1.SecurityDeviceService).to
 securityDeviceContainer.bind(securityDevice_repositry_1.SecurityDeviceQueryRepo).to(securityDevice_repositry_1.SecurityDeviceQueryRepo);
 securityDeviceContainer.bind(securityDevice_repositry_1.SecurityDeviceCommandRepo).to(securityDevice_repositry_1.SecurityDeviceCommandRepo);
 exports.default = securityDeviceContainer;
+//# sourceMappingURL=securityDevice.composition.js.map

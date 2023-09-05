@@ -95,10 +95,9 @@ const basicAuthMiddleware = (req, res, next) => {
 };
 exports.basicAuthMiddleware = basicAuthMiddleware;
 const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a, _b;
     const refreshToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
-    console.log(1111, refreshToken, (_b = req.headers) === null || _b === void 0 ? void 0 : _b.authorization);
-    if (!refreshToken && ((_c = req.headers) === null || _c === void 0 ? void 0 : _c.authorization)) {
+    if (!refreshToken && ((_b = req.headers) === null || _b === void 0 ? void 0 : _b.authorization)) {
         const token = req.headers.authorization.split(' ')[1];
         const verifiedToken = jwt_manager_1.jwtService.verifyToken(token);
         if (verifiedToken) {
@@ -106,28 +105,25 @@ const authJwtMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                 req.context = { user: null };
             // @ts-ignore
             req.context.user = yield userService.usersQueryRepo.findById(verifiedToken === null || verifiedToken === void 0 ? void 0 : verifiedToken.id);
-            console.log(2222, req.context.user);
         }
         return next();
     }
     if (!refreshToken)
         return next();
     const verifiedToken = jwt_manager_1.jwtService.verifyToken(refreshToken);
-    console.log(222, verifiedToken);
     if (!verifiedToken)
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
     if (!req.context)
         req.context = { user: null };
     // @ts-ignore
     req.context.user = yield userService.usersQueryRepo.findById(verifiedToken.id);
-    console.log(2222, req.context.user);
     next();
 });
 exports.authJwtMiddleware = authJwtMiddleware;
 const authJwtAccessMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e;
+    var _c, _d;
     if (!req.headers.authorization) {
-        if ((_d = req === null || req === void 0 ? void 0 : req.context) === null || _d === void 0 ? void 0 : _d.user)
+        if ((_c = req === null || req === void 0 ? void 0 : req.context) === null || _c === void 0 ? void 0 : _c.user)
             req.context.user = null;
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send();
     }
@@ -138,7 +134,6 @@ const authJwtAccessMiddleware = (req, res, next) => __awaiter(void 0, void 0, vo
             req.context = { user: null };
         // @ts-ignore
         req.context.user = yield userService.usersQueryRepo.findById(payload.id);
-        console.log('user', req.context.user);
         if (!req.context.user) {
             req.context.user = null;
             return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send();
@@ -146,7 +141,7 @@ const authJwtAccessMiddleware = (req, res, next) => __awaiter(void 0, void 0, vo
         next();
     }
     else {
-        if ((_e = req === null || req === void 0 ? void 0 : req.context) === null || _e === void 0 ? void 0 : _e.user)
+        if ((_d = req === null || req === void 0 ? void 0 : req.context) === null || _d === void 0 ? void 0 : _d.user)
             req.context.user = null;
         return res.status(baseTypes_1.HTTP_STATUSES.NOT_AUTHORIZED_401).send();
     }
@@ -162,3 +157,4 @@ const rateLimiterUsingThirdParty = (ms = 10000, max = 5) => {
     });
 };
 exports.rateLimiterUsingThirdParty = rateLimiterUsingThirdParty;
+//# sourceMappingURL=auth.middlewares.js.map

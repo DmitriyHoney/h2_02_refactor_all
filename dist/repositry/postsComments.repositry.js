@@ -117,3 +117,4 @@ PostsCommentsCommandRepo = __decorate([
     __metadata("design:paramtypes", [])
 ], PostsCommentsCommandRepo);
 exports.PostsCommentsCommandRepo = PostsCommentsCommandRepo;
+//# sourceMappingURL=postsComments.repositry.js.map

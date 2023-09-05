@@ -10,3 +10,4 @@ usersContainer.bind(users_services_1.UsersService).to(users_services_1.UsersServ
 usersContainer.bind(users_repositry_1.UsersQueryRepo).to(users_repositry_1.UsersQueryRepo);
 usersContainer.bind(users_repositry_1.UsersCommandRepo).to(users_repositry_1.UsersCommandRepo);
 exports.default = usersContainer;
+//# sourceMappingURL=users.composition.js.map

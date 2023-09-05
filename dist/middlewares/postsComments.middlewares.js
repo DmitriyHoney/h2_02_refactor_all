@@ -33,3 +33,4 @@ exports.createLikeForCommentBody = [
         return true;
     })),
 ];
+//# sourceMappingURL=postsComments.middlewares.js.map

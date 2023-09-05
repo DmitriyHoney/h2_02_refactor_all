@@ -22,3 +22,4 @@ exports.createAndUpdateBlogsBody = [
         .isURL().withMessage(baseTypes_1.VALIDATION_ERROR_MSG.IS_URL).bail()
         .isLength({ min: 2, max: 100 })
 ];
+//# sourceMappingURL=blogs.middlewares.js.map

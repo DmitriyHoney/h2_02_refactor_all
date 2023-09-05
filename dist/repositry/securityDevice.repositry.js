@@ -84,3 +84,4 @@ SecurityDeviceCommandRepo = __decorate([
     __metadata("design:paramtypes", [])
 ], SecurityDeviceCommandRepo);
 exports.SecurityDeviceCommandRepo = SecurityDeviceCommandRepo;
+//# sourceMappingURL=securityDevice.repositry.js.map

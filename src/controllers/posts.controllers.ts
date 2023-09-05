@@ -100,7 +100,7 @@ export class PostsControllers {
         req: Request<{ id: string }, {}, {}, BaseGetQueryParams>,
         res: Response
     ) {
-        const post = await this.postsService.postsQueryRepo.findById(req.params.id, req?.context?.user?.id);
+        const post = await this.postsService.postsQueryRepo.findById(req.params.id, req?.context?.user?.id, false);
         if (!post) return res.status(HTTP_STATUSES.NOT_FOUND_404).send();
         // @ts-ignore
         await this.postsService.likeUnlikePost(req.params.id, req.body.likeStatus, post, req.context.user);

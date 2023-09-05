@@ -83,3 +83,4 @@ PostsCommentsService = __decorate([
         postsComments_repositry_1.PostsCommentsCommandRepo])
 ], PostsCommentsService);
 exports.PostsCommentsService = PostsCommentsService;
+//# sourceMappingURL=postsComments.services.js.map

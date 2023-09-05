@@ -24,3 +24,4 @@ app_1.default.listen(settings_1.settings.PORT, () => __awaiter(void 0, void 0, v
         console.error(e);
     }
 }));
+//# sourceMappingURL=index.js.map

@@ -17,3 +17,4 @@ container.bind(posts_repositry_1.PostsQueryRepo).to(posts_repositry_1.PostsQuery
 container.bind(blogs_repositry_1.BlogsQueryRepo).to(blogs_repositry_1.BlogsQueryRepo);
 container.bind(posts_repositry_1.PostsCommandRepo).to(posts_repositry_1.PostsCommandRepo);
 exports.default = container;
+//# sourceMappingURL=posts.composition.js.map

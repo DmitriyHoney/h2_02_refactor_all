@@ -23,25 +23,28 @@ export class PostsQueryRepo {
             items: result.items.map((i) => postMap(i, userId))
         }
     }
-    async findById(id: string, userId: string | undefined) {
+    async findById(id: string, userId: string | undefined, excludeMeta = true) {
         if (!ObjectId.isValid(id)) return Promise.resolve(false);
         let row = await baseRepositry.findById(this.Post, id, {});
         if (!row) return false;
-        return postMap(row, userId);
+        return postMap(row, userId, excludeMeta);
     }
 }
 
-function postMap(i: any, userId: string | undefined) {
+function postMap(i: any, userId: string | undefined, excludeMeta = true) {
     const userStatus = i.extendedLikesInfo?.newestLikes.find((u: any) => u.userId === userId && u.status);
     const myStatus = userStatus ? userStatus.status : Likes.NONE;
     const newestLikes = i.extendedLikesInfo?.newestLikes
         .filter((i: any) => i.status === Likes.LIKE) // && i.userId !== userId
         .map((i: any) => {
-            return {
+            const result = {
                 addedAt: i.addedAt,
                 userId: i.userId,
                 login: i.login,
+                status: i.status,
             }
+            if (excludeMeta) delete result.status;
+            return result;
         })
         .slice(0, 3)
         .reverse();

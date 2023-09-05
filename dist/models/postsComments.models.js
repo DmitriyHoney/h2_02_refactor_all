@@ -55,3 +55,4 @@ exports.postsCommentsSchema.method('toJSON', function () {
     return object;
 });
 exports.PostComment = mongoose_1.default.model('PostComment', exports.postsCommentsSchema);
+//# sourceMappingURL=postsComments.models.js.map

@@ -16,3 +16,4 @@ router.put('/:id', auth_middlewares_1.authJwtAccessMiddleware, ...postsComments_
 router.delete('/:id', auth_middlewares_1.authJwtAccessMiddleware, controllers.deleteOne.bind(controllers));
 router.put('/:id/like-status', auth_middlewares_1.authJwtAccessMiddleware, ...postsComments_middlewares_1.createLikeForCommentBody, middlewares_1.validatorsErrorsMiddleware, controllers.likeUnlikeComment.bind(controllers));
 exports.default = router;
+//# sourceMappingURL=postComments.routes.js.map

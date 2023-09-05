@@ -115,3 +115,4 @@ PostsCommentsControllers = __decorate([
     __metadata("design:paramtypes", [postsComments_services_1.PostsCommentsService])
 ], PostsCommentsControllers);
 exports.PostsCommentsControllers = PostsCommentsControllers;
+//# sourceMappingURL=postsComments.controllers.js.map

@@ -21,3 +21,4 @@ router.get('/:id/comments/', auth_middlewares_1.authJwtMiddleware, postControlle
 router.post('/:id/comments/', auth_middlewares_1.authJwtAccessMiddleware, ...postsComments_middlewares_1.createPostsCommentsBody, middlewares_1.validatorsErrorsMiddleware, postControllers.createComment.bind(postControllers));
 router.put('/:id/like-status/', auth_middlewares_1.authJwtAccessMiddleware, ...posts_middlewares_1.createPostsLikeBody, middlewares_1.validatorsErrorsMiddleware, postControllers.likeUnlikePost.bind(postControllers));
 exports.default = router;
+//# sourceMappingURL=posts.routes.js.map

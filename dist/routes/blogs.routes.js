@@ -20,3 +20,4 @@ router.delete('/:id', auth_middlewares_1.basicAuthMiddleware, blogControllers.de
 router.get('/:id/posts', auth_middlewares_1.authJwtMiddleware, blogControllers.getPostsForBlog.bind(blogControllers));
 router.post('/:id/posts', auth_middlewares_1.basicAuthMiddleware, ...posts_middlewares_1.createPostFromBlogUrlBody, middlewares_1.validatorsErrorsMiddleware, blogControllers.createPostForBlog.bind(blogControllers));
 exports.default = router;
+//# sourceMappingURL=blogs.routes.js.map

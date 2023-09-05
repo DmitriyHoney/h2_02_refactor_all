@@ -40,3 +40,4 @@ app.use('/api/comments', postComments_routes_1.default);
 app.use('/api/testing/all-data', test_routes_1.default);
 app.get('*', (req, res) => res.status(baseTypes_1.HTTP_STATUSES.NOT_FOUND_404).send('Not found'));
 exports.default = app;
+//# sourceMappingURL=app.js.map

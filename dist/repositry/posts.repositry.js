@@ -36,14 +36,14 @@ let PostsQueryRepo = class PostsQueryRepo {
                 items: result.items.map((i) => postMap(i, userId)) });
         });
     }
-    findById(id, userId) {
+    findById(id, userId, excludeMeta = true) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!mongodb_1.ObjectId.isValid(id))
                 return Promise.resolve(false);
             let row = yield base_repositry_1.baseRepositry.findById(this.Post, id, {});
             if (!row)
                 return false;
-            return postMap(row, userId);
+            return postMap(row, userId, excludeMeta);
         });
     }
 };
@@ -52,16 +52,20 @@ PostsQueryRepo = __decorate([
     __metadata("design:paramtypes", [])
 ], PostsQueryRepo);
 exports.PostsQueryRepo = PostsQueryRepo;
-function postMap(i, userId) {
+function postMap(i, userId, excludeMeta = true) {
     var _a, _b;
     const userStatus = (_a = i.extendedLikesInfo) === null || _a === void 0 ? void 0 : _a.newestLikes.find((u) => u.userId === userId && u.status);
     const myStatus = userStatus ? userStatus.status : baseTypes_1.Likes.NONE;
     const newestLikes = (_b = i.extendedLikesInfo) === null || _b === void 0 ? void 0 : _b.newestLikes.filter((i) => i.status === baseTypes_1.Likes.LIKE).map((i) => {
-        return {
+        const result = {
             addedAt: i.addedAt,
             userId: i.userId,
             login: i.login,
+            status: i.status,
         };
+        if (excludeMeta)
+            delete result.status;
+        return result;
     }).slice(0, 3).reverse();
     return {
         id: i.id,
@@ -117,3 +121,4 @@ PostsCommandRepo = __decorate([
     __metadata("design:paramtypes", [])
 ], PostsCommandRepo);
 exports.PostsCommandRepo = PostsCommandRepo;
+//# sourceMappingURL=posts.repositry.js.map

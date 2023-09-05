@@ -85,9 +85,6 @@ export const basicAuthMiddleware = (req: Request, res: Response, next: NextFunct
 
 export const authJwtMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies?.refreshToken;
-    console.log(1111, refreshToken, req.headers?.authorization);
-    
-    
     if (!refreshToken && req.headers?.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const verifiedToken = jwtService.verifyToken(token);
@@ -95,21 +92,17 @@ export const authJwtMiddleware = async (req: Request, res: Response, next: NextF
             if (!req.context) req.context = { user: null };
             // @ts-ignore
             req.context.user = await userService.usersQueryRepo.findById(verifiedToken?.id);
-            console.log(2222, req.context.user);
         }
         return next();
     }
     if (!refreshToken) return next();
 
     const verifiedToken = jwtService.verifyToken(refreshToken);
-    console.log(222, verifiedToken);
-    
     if (!verifiedToken) return res.status(HTTP_STATUSES.NOT_AUTHORIZED_401).send('Not authorized');
 
     if (!req.context) req.context = { user: null };
     // @ts-ignore
     req.context.user = await userService.usersQueryRepo.findById(verifiedToken.id);
-    console.log(2222, req.context.user);
     next();
 };
 
@@ -126,7 +119,6 @@ export const authJwtAccessMiddleware = async (req: Request, res: Response, next:
         if (!req.context) req.context = { user: null };
         // @ts-ignore
         req.context.user = await userService.usersQueryRepo.findById(payload.id);
-        console.log('user', req.context.user);
         
         if (!req.context.user) {
             req.context.user = null;

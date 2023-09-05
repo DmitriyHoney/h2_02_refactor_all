@@ -40,3 +40,4 @@ exports.sessionsSchema.pre('save', function (next) {
     next();
 });
 exports.Session = mongoose_1.default.model('Session', exports.sessionsSchema);
+//# sourceMappingURL=sessions.models.js.map

@@ -19,3 +19,4 @@ exports.settings = {
     ACCESS_TOKEN_ALIVE: process.env.ACCESS_TOKEN_ALIVE || '10m',
     REFRESH_TOKEN_ALIVE: process.env.REFRESH_TOKEN_ALIVE || '30m',
 };
+//# sourceMappingURL=settings.js.map

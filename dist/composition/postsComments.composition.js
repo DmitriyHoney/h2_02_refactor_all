@@ -10,3 +10,4 @@ container.bind(postsComments_services_1.PostsCommentsService).to(postsComments_s
 container.bind(postsComments_repositry_1.PostsCommentsQueryRepo).to(postsComments_repositry_1.PostsCommentsQueryRepo);
 container.bind(postsComments_repositry_1.PostsCommentsCommandRepo).to(postsComments_repositry_1.PostsCommentsCommandRepo);
 exports.default = container;
+//# sourceMappingURL=postsComments.composition.js.map

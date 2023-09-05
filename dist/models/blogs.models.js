@@ -35,3 +35,4 @@ exports.blogSchema.method('toJSON', function () {
     return object;
 });
 exports.Blog = mongoose_1.default.model('Blog', exports.blogSchema);
+//# sourceMappingURL=blogs.models.js.map

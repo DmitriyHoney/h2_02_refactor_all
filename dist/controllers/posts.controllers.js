@@ -111,7 +111,7 @@ let PostsControllers = class PostsControllers {
     likeUnlikePost(req, res) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield this.postsService.postsQueryRepo.findById(req.params.id, (_b = (_a = req === null || req === void 0 ? void 0 : req.context) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id);
+            const post = yield this.postsService.postsQueryRepo.findById(req.params.id, (_b = (_a = req === null || req === void 0 ? void 0 : req.context) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b.id, false);
             if (!post)
                 return res.status(baseTypes_1.HTTP_STATUSES.NOT_FOUND_404).send();
             // @ts-ignore
@@ -128,3 +128,4 @@ PostsControllers = __decorate([
         postsComments_services_1.PostsCommentsService])
 ], PostsControllers);
 exports.PostsControllers = PostsControllers;
+//# sourceMappingURL=posts.controllers.js.map

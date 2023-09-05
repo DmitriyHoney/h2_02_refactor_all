@@ -65,3 +65,4 @@ UsersControllers = __decorate([
     __metadata("design:paramtypes", [users_services_1.UsersService])
 ], UsersControllers);
 exports.UsersControllers = UsersControllers;
+//# sourceMappingURL=user.controllers.js.map

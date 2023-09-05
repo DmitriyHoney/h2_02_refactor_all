@@ -127,3 +127,4 @@ exports.baseRepositry = {
         });
     }
 };
+//# sourceMappingURL=base.repositry.js.map

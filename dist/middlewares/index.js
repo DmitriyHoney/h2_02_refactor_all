@@ -13,3 +13,4 @@ const validatorsErrorsMiddleware = (req, res, next) => {
     next();
 };
 exports.validatorsErrorsMiddleware = validatorsErrorsMiddleware;
+//# sourceMappingURL=index.js.map

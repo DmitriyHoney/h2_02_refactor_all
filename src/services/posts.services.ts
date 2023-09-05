@@ -57,7 +57,7 @@ export class PostsService {
                 status: newStatus
             });
         }
-        // delete likesInfo.myStatus;
+        delete likesInfo.myStatus;
         return await this.update(id, { ...post, likesInfo });
     }
 }

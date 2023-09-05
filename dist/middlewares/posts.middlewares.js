@@ -82,3 +82,4 @@ exports.createPostsLikeBody = [
         return true;
     })),
 ];
+//# sourceMappingURL=posts.middlewares.js.map

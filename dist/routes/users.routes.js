@@ -15,3 +15,4 @@ router.get('/', auth_middlewares_1.basicAuthMiddleware, userControllers.getAll.b
 router.post('/', auth_middlewares_1.basicAuthMiddleware, ...users_middlewares_1.userPostBody, middlewares_1.validatorsErrorsMiddleware, userControllers.create.bind(userControllers));
 router.delete('/:id', auth_middlewares_1.basicAuthMiddleware, userControllers.deleteOne.bind(userControllers));
 exports.default = router;
+//# sourceMappingURL=users.routes.js.map

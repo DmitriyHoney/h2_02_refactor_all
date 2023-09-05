@@ -85,7 +85,7 @@ let PostsService = class PostsService {
                     status: newStatus
                 });
             }
-            // delete likesInfo.myStatus;
+            delete likesInfo.myStatus;
             return yield this.update(id, Object.assign(Object.assign({}, post), { likesInfo }));
         });
     }
@@ -100,3 +100,4 @@ PostsService = __decorate([
         posts_repositry_1.PostsCommandRepo])
 ], PostsService);
 exports.PostsService = PostsService;
+//# sourceMappingURL=posts.services.js.map

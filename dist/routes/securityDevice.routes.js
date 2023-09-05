@@ -12,3 +12,4 @@ router.get('/', securityDeviceControllers.getAllUserDevices.bind(securityDeviceC
 router.delete('/', securityDeviceControllers.deleteAllUserDecices.bind(securityDeviceControllers));
 router.delete('/:deviceId', securityDeviceControllers.deleteUserDeviceById.bind(securityDeviceControllers));
 exports.default = router;
+//# sourceMappingURL=securityDevice.routes.js.map

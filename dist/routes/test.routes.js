@@ -34,3 +34,4 @@ router.delete('/', (req, res) => {
     });
 });
 exports.default = router;
+//# sourceMappingURL=test.routes.js.map

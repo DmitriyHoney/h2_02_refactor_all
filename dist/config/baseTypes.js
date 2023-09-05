@@ -35,3 +35,4 @@ var Likes;
     Likes["DISLIKE"] = "Dislike";
     Likes["NONE"] = "None";
 })(Likes = exports.Likes || (exports.Likes = {}));
+//# sourceMappingURL=baseTypes.js.map

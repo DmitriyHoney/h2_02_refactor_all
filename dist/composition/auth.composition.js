@@ -20,3 +20,4 @@ authContainer.bind(users_services_1.UsersService).to(users_services_1.UsersServi
 authContainer.bind(users_repositry_1.UsersQueryRepo).to(users_repositry_1.UsersQueryRepo);
 authContainer.bind(users_repositry_1.UsersCommandRepo).to(users_repositry_1.UsersCommandRepo);
 exports.default = authContainer;
+//# sourceMappingURL=auth.composition.js.map

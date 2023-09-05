@@ -39,3 +39,4 @@ exports.postsSchema.method('toJSON', function () {
     return object;
 });
 exports.Post = mongoose_1.default.model('Post', exports.postsSchema);
+//# sourceMappingURL=posts.models.js.map

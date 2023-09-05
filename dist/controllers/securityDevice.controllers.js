@@ -64,3 +64,4 @@ SecurityDeviceControllers = __decorate([
     __metadata("design:paramtypes", [securityDevice_services_1.SecurityDeviceService])
 ], SecurityDeviceControllers);
 exports.SecurityDeviceControllers = SecurityDeviceControllers;
+//# sourceMappingURL=securityDevice.controllers.js.map

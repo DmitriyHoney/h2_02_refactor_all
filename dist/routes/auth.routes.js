@@ -21,3 +21,4 @@ router.post('/new-password', (0, auth_middlewares_1.rateLimiterUsingThirdParty)(
 router.post('/refresh-token', auth_middlewares_1.authJwtMiddleware, authControllers.refreshPassword.bind(authControllers));
 router.get('/me', auth_middlewares_1.authJwtAccessMiddleware, authControllers.getMeInfo.bind(authControllers));
 exports.default = router;
+//# sourceMappingURL=auth.routes.js.map
